@@ -29,30 +29,79 @@
 
 
     // ==========================================
-    // EVENTO NFC
+    // TARJETAS NFC
     // ==========================================
 
-    gtag('event', 'nfc_tap', {
+    const cards = {
 
-      restaurant: 'veta',
+      "veta-01": {
+        id: "VETA-01",
+        name: "Arturo"
+      },
 
-      restaurant_name: 'VETA Grill Steakhouse Barcelona',
+      "veta-02": {
+        id: "VETA-02",
+        name: "Carol"
+      },
 
-      card_id: 'VETA-03',
+      "veta-03": {
+        id: "VETA-03",
+        name: "Valentina"
+      },
 
-      card_name: 'Valentina',
+      "veta-04": {
+        id: "VETA-04",
+        name: "Dario"
+      },
 
-      nfc_id: 'veta-03',
+      "veta-05": {
+        id: "VETA-05",
+        name: "Belen"
+      }
 
-      source: 'nfc',
-
-      debug_mode: true
-
-    });
+    };
 
 
     // ==========================================
-    // REDIRECCIÓN
+    // LEER LA TARJETA DESDE LA URL
+    // ==========================================
+
+    const params = new URLSearchParams(window.location.search);
+
+    const nfc = params.get("nfc");
+
+    const card = cards[nfc];
+
+
+    // ==========================================
+    // REGISTRAR NFC
+    // ==========================================
+
+    if (card) {
+
+      gtag('event', 'nfc_tap', {
+
+        restaurant: 'veta',
+
+        restaurant_name: 'VETA Grill Steakhouse Barcelona',
+
+        card_id: card.id,
+
+        card_name: card.name,
+
+        nfc_id: nfc,
+
+        source: 'nfc',
+
+        debug_mode: true
+
+      });
+
+    }
+
+
+    // ==========================================
+    // REDIRECCIÓN A GOOGLE MAPS
     // ==========================================
 
     setTimeout(function() {

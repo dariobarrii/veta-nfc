@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>VETA Grill Steakhouse</title>
+  <title>VETA NFC Test</title>
 
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
 
   <script>
@@ -20,186 +19,24 @@
 
     gtag('config', 'G-7429GHXMBM');
 
-
-    // ==========================================
-    // TARJETAS NFC VETA
-    // ==========================================
-
-    const nfcCards = {
-
-      "veta-01": {
-        restaurant: "VETA Grill Steakhouse Barcelona",
-        card: "VETA-01",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      },
-
-      "veta-02": {
-        restaurant: "VETA Grill Steakhouse Barcelona",
-        card: "VETA-02",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      },
-
-      "veta-03": {
-        restaurant: "VETA Grill Steakhouse Barcelona",
-        card: "VETA-03",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      },
-
-      "veta-04": {
-        restaurant: "VETA Grill Steakhouse Barcelona",
-        card: "VETA-04",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      },
-
-      "veta-05": {
-        restaurant: "VETA Grill Steakhouse Barcelona",
-        card: "VETA-05",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      }
-
-    };
-
-
-    // ==========================================
-    // OBTENER IDENTIFICADOR NFC
-    // ==========================================
-
-    const params = new URLSearchParams(window.location.search);
-
-    const nfc = params.get("nfc");
-
-    const card = nfcCards[nfc];
-
-
-    // ==========================================
-    // NFC VÁLIDO
-    // ==========================================
-
-    if (card) {
-
-      document.addEventListener("DOMContentLoaded", function() {
-
-        document.getElementById("restaurantName").textContent =
-          card.restaurant;
-
-        document.getElementById("message").textContent =
-          "Abriendo Google Maps...";
-
-        document.getElementById("openMaps").href =
-          card.reviewUrl;
-
-      });
-
-
-      // ==========================================
-      // REGISTRAR TOQUE NFC
-      // ==========================================
-
-      gtag('event', 'nfc_tap', {
-
-        restaurant: card.restaurant,
-
-        card_id: card.card,
-
-        nfc_id: nfc,
-
-        source: 'nfc',
-
-        event_callback: function() {
-
-          window.location.href = card.reviewUrl;
-
-        },
-
-        event_timeout: 1000
-
-      });
-
-
-      // ==========================================
-      // REDIRECCIÓN DE SEGURIDAD
-      // ==========================================
-
-      setTimeout(function() {
-
-        window.location.href = card.reviewUrl;
-
-      }, 1200);
-
-    }
-
-
-    // ==========================================
-    // NFC NO IDENTIFICADO
-    // ==========================================
-
-    else {
-
-      document.addEventListener("DOMContentLoaded", function() {
-
-        document.getElementById("restaurantName").textContent =
-          "NFC no identificado";
-
-        document.getElementById("message").textContent =
-          "Esta tarjeta NFC no está registrada.";
-
-      });
-
-    }
-
+    // Evento de prueba
+    gtag('event', 'nfc_tap', {
+      restaurant: 'veta',
+      card_id: 'VETA-01',
+      nfc_id: 'veta-01',
+      source: 'nfc'
+    });
   </script>
-
-
-  <style>
-
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px 20px;
-      background: #ffffff;
-      color: #222;
-    }
-
-    h1 {
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
-
-    p {
-      font-size: 17px;
-      line-height: 1.5;
-    }
-
-    a {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 15px 25px;
-      background: #4285F4;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-
-  </style>
 
 </head>
 
-
 <body>
 
-  <h1 id="restaurantName">
-    Cargando...
-  </h1>
+  <h1>VETA NFC TEST</h1>
 
-  <p id="message">
-    Abriendo Google Maps...
+  <p>
+    Prueba de Google Analytics
   </p>
 
-  <a id="openMaps" href="#" target="_self">
-    Abrir Google Maps
-  </a>
-
 </body>
-
 </html>

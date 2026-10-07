@@ -6,6 +6,7 @@
 
   <title>VETA</title>
 
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
 
   <script>
@@ -19,42 +20,99 @@
 
     gtag('config', 'G-7429GHXMBM');
 
+
+    /* =========================
+       TARJETAS NFC
+       ========================= */
+
     const cards = {
-      "veta-01": { id: "VETA-01", name: "Arturo" },
-      "veta-02": { id: "VETA-02", name: "Carol" },
-      "veta-03": { id: "VETA-03", name: "Valentina" },
-      "veta-04": { id: "VETA-04", name: "Dario" },
-      "veta-05": { id: "VETA-05", name: "Belen" }
+      "veta-01": {
+        id: "VETA-01",
+        name: "Arturo"
+      },
+
+      "veta-02": {
+        id: "VETA-02",
+        name: "Carol"
+      },
+
+      "veta-03": {
+        id: "VETA-03",
+        name: "Valentina"
+      },
+
+      "veta-04": {
+        id: "VETA-04",
+        name: "Dario"
+      },
+
+      "veta-05": {
+        id: "VETA-05",
+        name: "Belen"
+      }
     };
 
+
+    /* =========================
+       DETECTAR TARJETA
+       ========================= */
+
     const params = new URLSearchParams(window.location.search);
+
     const nfc = params.get("nfc");
+
     const card = cards[nfc];
+
+
+    /* =========================
+       ENVIAR EVENTO A GA4
+       ========================= */
 
     if (card) {
 
       gtag('event', 'nfc_tap', {
+
         restaurant: 'veta',
-        restaurant_name: 'VETA Grill Steakhouse Barcelona',
-        card_id: card.id,
-        card_name: card.name,
-        nfc_id: nfc,
-        source: 'nfc',
-        debug_mode: true
+
+        restaurant_name:
+          'VETA Grill Steakhouse Barcelona',
+
+        card_id:
+          card.id,
+
+        card_name:
+          card.name,
+
+        nfc_id:
+          nfc,
+
+        source:
+          'nfc',
+
+        debug_mode:
+          true
+
       });
 
     }
 
-    // Redirección rápida a Google Maps
+
+    /* =========================
+       REDIRECCIÓN
+       ========================= */
+
     setTimeout(function() {
 
       window.location.href =
         "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1";
 
-    }, 500);
+    }, 3000);
+
   </script>
+
 </head>
 
 <body>
 </body>
+
 </html>

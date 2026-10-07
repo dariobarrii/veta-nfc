@@ -25,34 +25,39 @@
     // CONFIGURACIÓN DE LAS TARJETAS VETA
     // ==========================================
 
-    const cards = {
+const cards = {
 
-      "veta-01": {
-        id: "VETA-01",
-        url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      },
+  "veta-01": {
+    id: "VETA-01",
+    name: "Arturo",
+    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
+  },
 
-      "veta-02": {
-        id: "VETA-02",
-        url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      },
+  "veta-02": {
+    id: "VETA-02",
+    name: "Carol",
+    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
+  },
 
-      "veta-03": {
-        id: "VETA-03",
-        url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      },
+  "veta-03": {
+    id: "VETA-03",
+    name: "Valentina",
+    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
+  },
 
-      "veta-04": {
-        id: "VETA-04",
-        url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      },
+  "veta-04": {
+    id: "VETA-04",
+    name: "Dario",
+    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
+  },
 
-      "veta-05": {
-        id: "VETA-05",
-        url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-      }
+  "veta-05": {
+    id: "VETA-05",
+    name: "Belen",
+    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
+  }
 
-    };
+};
 
 
     // ==========================================
@@ -90,19 +95,21 @@
       // REGISTRAR EL TOQUE
       // ==========================================
 
-      gtag('event', 'nfc_tap', {
+gtag('event', 'nfc_tap', {
 
-        restaurant: 'veta',
+  restaurant: 'veta',
 
-        restaurant_name: 'VETA Grill Steakhouse Barcelona',
+  restaurant_name: 'VETA Grill Steakhouse Barcelona',
 
-        card_id: card.id,
+  card_id: card.id,
 
-        nfc_id: nfc,
+  card_name: card.name,
 
-        source: 'nfc'
+  nfc_id: nfc,
 
-      });
+  source: 'nfc'
+
+});
 
 
       // ==========================================

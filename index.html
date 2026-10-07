@@ -6,6 +6,7 @@
 
   <title>VETA NFC</title>
 
+  <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
 
   <script>
@@ -19,40 +20,152 @@
 
     gtag('config', 'G-7429GHXMBM');
 
-    const params = new URLSearchParams(window.location.search);
-    const nfc = params.get("nfc");
+    // =========================
+    // TARJETAS NFC
+    // =========================
 
     const cards = {
-      "veta-01": ["VETA-01", "Arturo"],
-      "veta-02": ["VETA-02", "Carol"],
-      "veta-03": ["VETA-03", "Valentina"],
-      "veta-04": ["VETA-04", "Dario"],
-      "veta-05": ["VETA-05", "Belen"]
+      "veta-01": {
+        id: "VETA-01",
+        name: "Arturo"
+      },
+
+      "veta-02": {
+        id: "VETA-02",
+        name: "Carol"
+      },
+
+      "veta-03": {
+        id: "VETA-03",
+        name: "Valentina"
+      },
+
+      "veta-04": {
+        id: "VETA-04",
+        name: "Dario"
+      },
+
+      "veta-05": {
+        id: "VETA-05",
+        name: "Belen"
+      }
     };
 
+
+    // =========================
+    // DETECTAR TARJETA
+    // =========================
+
+    const params = new URLSearchParams(window.location.search);
+
+    const nfc = params.get("nfc");
+
     const card = cards[nfc];
+
+
+    // =========================
+    // ENVIAR EVENTO A GA4
+    // =========================
 
     if (card) {
 
       gtag('event', 'nfc_tap', {
+
         restaurant: 'veta',
-        restaurant_name: 'VETA Grill Steakhouse Barcelona',
-        card_id: card[0],
-        card_name: card[1],
-        nfc_id: nfc,
-        source: 'nfc',
-        debug_mode: true
+
+        restaurant_name:
+          'VETA Grill Steakhouse Barcelona',
+
+        card_id:
+          card.id,
+
+        card_name:
+          card.name,
+
+        nfc_id:
+          nfc,
+
+        source:
+          'nfc',
+
+        debug_mode:
+          true
+
       });
 
-      document.body.innerHTML =
-        "<h1>NFC detectado</h1>" +
-        "<p>Tarjeta: " + card[0] + "</p>" +
-        "<p>Nombre: " + card[1] + "</p>";
+
+      // =========================
+      // MOSTRAR RESULTADO
+      // =========================
+
+      document.addEventListener('DOMContentLoaded', function() {
+
+        document.body.innerHTML = `
+
+          <div style="
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px;
+          ">
+
+            <h1>NFC detectado</h1>
+
+            <p>
+              <strong>Tarjeta:</strong>
+              ${card.id}
+            </p>
+
+            <p>
+              <strong>Nombre:</strong>
+              ${card.name}
+            </p>
+
+            <p>
+              <strong>NFC ID:</strong>
+              ${nfc}
+            </p>
+
+            <p style="color: green;">
+              Evento nfc_tap enviado
+            </p>
+
+          </div>
+
+        `;
+
+      });
+
+    } else {
+
+      document.addEventListener('DOMContentLoaded', function() {
+
+        document.body.innerHTML = `
+
+          <div style="
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px;
+          ">
+
+            <h1>VETA NFC</h1>
+
+            <p>No se detectó ninguna tarjeta.</p>
+
+          </div>
+
+        `;
+
+      });
+
     }
+
   </script>
 
 </head>
 
 <body>
+
+  <p>Cargando...</p>
+
 </body>
 </html>

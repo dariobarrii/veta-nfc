@@ -6,8 +6,37 @@
 
   <title>VETA Grill Steakhouse Barcelona</title>
 
-  <meta http-equiv="refresh"
-        content="0;url=https://www.google.com/maps/search/?api=1&query=VETA+Grill+Steakhouse+Barcelona">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-7429GHXMBM');
+
+    // Registrar uso del NFC
+    gtag('event', 'nfc_tap', {
+      restaurant: 'veta',
+      source: 'nfc'
+    });
+  </script>
+
+  <script>
+    // Enlace directo a escribir una reseña
+    const googleMapsReview =
+      'https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1';
+
+    // Esperamos un momento para que Analytics pueda registrar el evento
+    setTimeout(function() {
+      window.location.href = googleMapsReview;
+    }, 300);
+  </script>
 
   <style>
     body {
@@ -43,7 +72,7 @@
 
   <p>Abriendo Google Maps...</p>
 
-  <a href="https://www.google.com/maps/search/?api=1&query=VETA+Grill+Steakhouse+Barcelona">
+  <a href="https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1">
     Abrir Google Maps
   </a>
 

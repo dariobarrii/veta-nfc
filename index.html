@@ -8,7 +8,7 @@
 
   <title>VETA NFC</title>
 
-  <!-- Google Analytics -->
+  <!-- GOOGLE ANALYTICS -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
 
   <script>
@@ -28,7 +28,8 @@
 <body>
 
   <h1>VETA NFC</h1>
-  <p>Gracias por tu visita.</p>
+  <p>Redirigiendo a Google Maps...</p>
+
 
   <script>
 
@@ -72,7 +73,7 @@
 
 
     // ==========================================
-    // DETECTAR TARJETA NFC
+    // LEER NFC DESDE LA URL
     // ==========================================
 
     const params = new URLSearchParams(window.location.search);
@@ -88,7 +89,12 @@
 
     if (card) {
 
-      // Registrar el toque en Google Analytics
+      console.log("NFC detectado:", card);
+
+
+      // ========================================
+      // ENVIAR EVENTO A GOOGLE ANALYTICS
+      // ========================================
 
       gtag('event', 'nfc_tap', {
 
@@ -102,19 +108,33 @@
 
         nfc_id: nfc,
 
-        source: 'nfc'
+        source: 'nfc',
+
+        debug_mode: true,
+
+        event_callback: function() {
+
+          // Analytics confirmó el envío
+          // Ahora redirigimos a Google Maps
+
+          window.location.href = card.url;
+
+        }
 
       });
 
 
-      // Esperar un momento para que Analytics
-      // pueda enviar el evento antes de redirigir
+      // ========================================
+      // SEGURIDAD
+      // ========================================
+      // Si Analytics no responde, igualmente
+      // redirigimos después de 4 segundos.
 
       setTimeout(function() {
 
         window.location.href = card.url;
 
-      }, 1500);
+      }, 4000);
 
     }
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>VETA Grill Steakhouse Barcelona</title>
+  <title>Prueba NFC VETA</title>
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
@@ -18,63 +18,24 @@
 
     gtag('js', new Date());
 
-    gtag('config', 'G-7429GHXMBM');
+    gtag('config', 'G-7429GHXMBM', {
+      debug_mode: true
+    });
 
-    // Registrar uso del NFC
     gtag('event', 'nfc_tap', {
       restaurant: 'veta',
-      source: 'nfc'
+      source: 'nfc',
+      debug_mode: true
     });
   </script>
 
-  <script>
-    // Enlace directo a escribir una reseña
-    const googleMapsReview =
-      'https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1';
-
-    // Esperamos un momento para que Analytics pueda registrar el evento
-    setTimeout(function() {
-      window.location.href = googleMapsReview;
-    }, 300);
-  </script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    h1 {
-      font-size: 24px;
-    }
-
-    p {
-      font-size: 17px;
-    }
-
-    a {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 15px 25px;
-      background: #4285F4;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-  </style>
 </head>
 
 <body>
 
-  <h1>VETA Grill Steakhouse Barcelona</h1>
+  <h1>Prueba NFC VETA</h1>
 
-  <p>Abriendo Google Maps...</p>
-
-  <a href="https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1">
-    Abrir Google Maps
-  </a>
+  <p>Si estás viendo esta página, Analytics debería recibir el evento.</p>
 
 </body>
 </html>

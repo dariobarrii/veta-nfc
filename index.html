@@ -6,7 +6,7 @@
 
   <title>VETA NFC</title>
 
-  <!-- Google Analytics 4 -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
 
   <script>
@@ -19,6 +19,22 @@
     gtag('js', new Date());
 
     gtag('config', 'G-7429GHXMBM');
+  </script>
+
+</head>
+
+<body>
+
+  <div id="resultado" style="
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 40px;
+  ">
+    Cargando...
+  </div>
+
+
+  <script>
 
     // =========================
     // TARJETAS NFC
@@ -53,10 +69,12 @@
 
 
     // =========================
-    // DETECTAR TARJETA
+    // DETECTAR NFC
     // =========================
 
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(
+      window.location.search
+    );
 
     const nfc = params.get("nfc");
 
@@ -64,108 +82,103 @@
 
 
     // =========================
-    // ENVIAR EVENTO A GA4
+    // ESPERAR A QUE TODO CARGUE
     // =========================
 
-    if (card) {
+    window.addEventListener("load", function() {
 
-      gtag('event', 'nfc_tap', {
+      if (!card) {
 
-        restaurant: 'veta',
+        document.getElementById("resultado").innerHTML = `
+          <h1>VETA NFC</h1>
+          <p>No se detectó ninguna tarjeta.</p>
+        `;
 
-        restaurant_name:
-          'VETA Grill Steakhouse Barcelona',
-
-        card_id:
-          card.id,
-
-        card_name:
-          card.name,
-
-        nfc_id:
-          nfc,
-
-        source:
-          'nfc',
-
-        debug_mode:
-          true
-
-      });
+        return;
+      }
 
 
       // =========================
-      // MOSTRAR RESULTADO
+      // MOSTRAR TARJETA
       // =========================
 
-      document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById("resultado").innerHTML = `
 
-        document.body.innerHTML = `
+        <h1>NFC detectado</h1>
 
-          <div style="
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 40px;
+        <p>
+          <strong>Tarjeta:</strong>
+          ${card.id}
+        </p>
+
+        <p>
+          <strong>Nombre:</strong>
+          ${card.name}
+        </p>
+
+        <p>
+          <strong>NFC ID:</strong>
+          ${nfc}
+        </p>
+
+        <p style="color:green;">
+          Enviando evento a Google Analytics...
+        </p>
+
+      `;
+
+
+      // =========================
+      // ESPERAR 2 SEGUNDOS
+      // =========================
+
+      setTimeout(function() {
+
+        gtag('event', 'nfc_tap', {
+
+          restaurant: 'veta',
+
+          restaurant_name:
+            'VETA Grill Steakhouse Barcelona',
+
+          card_id:
+            card.id,
+
+          card_name:
+            card.name,
+
+          nfc_id:
+            nfc,
+
+          source:
+            'nfc',
+
+          debug_mode:
+            true
+
+        });
+
+
+        // =========================
+        // CONFIRMAR EN PANTALLA
+        // =========================
+
+        document.getElementById("resultado").innerHTML += `
+
+          <p style="
+            color:green;
+            font-weight:bold;
           ">
-
-            <h1>NFC detectado</h1>
-
-            <p>
-              <strong>Tarjeta:</strong>
-              ${card.id}
-            </p>
-
-            <p>
-              <strong>Nombre:</strong>
-              ${card.name}
-            </p>
-
-            <p>
-              <strong>NFC ID:</strong>
-              ${nfc}
-            </p>
-
-            <p style="color: green;">
-              Evento nfc_tap enviado
-            </p>
-
-          </div>
+            ✓ Evento nfc_tap enviado
+          </p>
 
         `;
 
-      });
+      }, 2000);
 
-    } else {
-
-      document.addEventListener('DOMContentLoaded', function() {
-
-        document.body.innerHTML = `
-
-          <div style="
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 40px;
-          ">
-
-            <h1>VETA NFC</h1>
-
-            <p>No se detectó ninguna tarjeta.</p>
-
-          </div>
-
-        `;
-
-      });
-
-    }
+    });
 
   </script>
-
-</head>
-
-<body>
-
-  <p>Cargando...</p>
 
 </body>
 </html>

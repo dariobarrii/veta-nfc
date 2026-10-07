@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Prueba NFC VETA</title>
+  <title>Google Reviews</title>
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
@@ -18,24 +18,212 @@
 
     gtag('js', new Date());
 
-    gtag('config', 'G-7429GHXMBM', {
-      debug_mode: true
-    });
+    gtag('config', 'G-7429GHXMBM');
 
-    gtag('event', 'nfc_tap', {
-      restaurant: 'veta',
-      source: 'nfc',
-      debug_mode: true
-    });
+    // ==========================================
+    // CONFIGURACIÓN DE RESTAURANTES
+    // ==========================================
+
+    const restaurants = {
+
+      "veta": {
+        name: "VETA Grill Steakhouse Barcelona",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
+      },
+
+      "feral": {
+        name: "Feral Steakhouse Barcelona",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a3cc9ee3d1a5:0x950e4752bdda0102!12e1"
+      },
+
+      "tzura": {
+        name: "Tzura Steak House",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a35c26885825:0xa52c4df1ad24f88c!12e1"
+      },
+
+      "don-asador": {
+        name: "Don Asador",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a368d076db3f:0x2bb996be1348746!12e1"
+      },
+
+      "barcelona-grill": {
+        name: "Barcelona Grill Steak House",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30acac16ca5:0x8429d9c0488aa1f!12e1"
+      },
+
+      "the-barcelona-grill": {
+        name: "The Barcelona Grill - Barcelona Steakhouse",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a37d485f1653:0xd8f17e044334a841!12e1"
+      },
+
+      "abanic": {
+        name: "Abanic Restaurant",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a300bb618e67:0x8645d10d25e6703!12e1"
+      },
+
+      "asado-libre": {
+        name: "Asado Libre Buffet de Carnes Argentinas",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a377851e52bb:0x76bb266bf8252a7b!12e1"
+      }
+
+    };
+
+
+    // ==========================================
+    // OBTENER EL NFC DESDE LA URL
+    // ==========================================
+
+    const params = new URLSearchParams(window.location.search);
+    const nfc = params.get("nfc");
+
+    const restaurant = restaurants[nfc];
+
+
+    // ==========================================
+    // SI EL NFC ES VÁLIDO
+    // ==========================================
+
+    if (restaurant) {
+
+      // Mostrar nombre del restaurante
+      document.addEventListener("DOMContentLoaded", function() {
+
+        document.getElementById("restaurantName").textContent =
+          restaurant.name;
+
+        document.getElementById("openMaps").href =
+          restaurant.reviewUrl;
+
+      });
+
+
+      // Registrar el toque NFC en Google Analytics
+      gtag('event', 'nfc_tap', {
+
+        restaurant: nfc,
+
+        restaurant_name: restaurant.name,
+
+        source: 'nfc',
+
+        event_callback: function() {
+
+          window.location.href = restaurant.reviewUrl;
+
+        },
+
+        event_timeout: 1000
+
+      });
+
+
+      // Seguridad:
+      // Si Analytics no responde, redirigir igualmente después de 1 segundo.
+
+      setTimeout(function() {
+
+        window.location.href = restaurant.reviewUrl;
+
+      }, 1200);
+
+    }
+
+
+    // ==========================================
+    // SI NO SE ENCUENTRA EL NFC
+    // ==========================================
+
+    else {
+
+      document.addEventListener("DOMContentLoaded", function() {
+
+        document.getElementById("restaurantName").textContent =
+          "NFC no identificado";
+
+        document.getElementById("message").textContent =
+          "No se ha identificado esta tarjeta NFC.";
+
+      });
+
+    }
+
   </script>
+
+
+  <style>
+
+    body {
+
+      font-family: Arial, sans-serif;
+
+      text-align: center;
+
+      padding: 40px 20px;
+
+      background: #ffffff;
+
+      color: #222;
+
+    }
+
+
+    h1 {
+
+      font-size: 24px;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    p {
+
+      font-size: 17px;
+
+      line-height: 1.5;
+
+    }
+
+
+    a {
+
+      display: inline-block;
+
+      margin-top: 20px;
+
+      padding: 15px 25px;
+
+      background: #4285F4;
+
+      color: white;
+
+      text-decoration: none;
+
+      border-radius: 8px;
+
+      font-weight: bold;
+
+    }
+
+  </style>
 
 </head>
 
+
 <body>
 
-  <h1>Prueba NFC VETA</h1>
+  <h1 id="restaurantName">
+    Cargando...
+  </h1>
 
-  <p>Si estás viendo esta página, Analytics debería recibir el evento.</p>
+  <p id="message">
+    Abriendo Google Maps...
+  </p>
+
+  <a id="openMaps" href="#" target="_self">
+    Abrir Google Maps
+  </a>
 
 </body>
+
 </html>

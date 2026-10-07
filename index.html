@@ -19,19 +19,13 @@
 
     gtag('config', 'G-7429GHXMBM');
 
-    const cards = {
-      "veta-01": { id: "VETA-01", name: "Arturo" },
-      "veta-02": { id: "VETA-02", name: "Carol" },
-      "veta-03": { id: "VETA-03", name: "Valentina" },
-      "veta-04": { id: "VETA-04", name: "Dario" },
-      "veta-05": { id: "VETA-05", name: "Belen" }
-    };
-
     const params = new URLSearchParams(window.location.search);
-    const nfc = params.get("nfc");
-    const card = cards[nfc];
+const nfc = params.get("nfc");
+const card = cards[nfc];
 
-    if (card) {
+alert("NFC detectado: " + nfc + " | Tarjeta: " + (card ? card.name : "NO ENCONTRADA"));
+
+if (card) {
       gtag('event', 'nfc_tap', {
         restaurant: 'veta',
         restaurant_name: 'VETA Grill Steakhouse Barcelona',

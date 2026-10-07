@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>VETA NFC TEST</title>
+  <title>VETA</title>
 
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
 
   <script>
@@ -20,103 +19,42 @@
 
     gtag('config', 'G-7429GHXMBM');
 
-    // TARJETAS NFC
     const cards = {
-      "veta-01": {
-        id: "VETA-01",
-        name: "Arturo"
-      },
-
-      "veta-02": {
-        id: "VETA-02",
-        name: "Carol"
-      },
-
-      "veta-03": {
-        id: "VETA-03",
-        name: "Valentina"
-      },
-
-      "veta-04": {
-        id: "VETA-04",
-        name: "Dario"
-      },
-
-      "veta-05": {
-        id: "VETA-05",
-        name: "Belen"
-      }
+      "veta-01": { id: "VETA-01", name: "Arturo" },
+      "veta-02": { id: "VETA-02", name: "Carol" },
+      "veta-03": { id: "VETA-03", name: "Valentina" },
+      "veta-04": { id: "VETA-04", name: "Dario" },
+      "veta-05": { id: "VETA-05", name: "Belen" }
     };
 
-    // LEER EL NFC DESDE LA URL
     const params = new URLSearchParams(window.location.search);
     const nfc = params.get("nfc");
-
     const card = cards[nfc];
 
-    // MOSTRAR INFORMACIÓN EN PANTALLA
-    window.addEventListener("DOMContentLoaded", function() {
+    if (card) {
 
-      const info = document.getElementById("info");
+      gtag('event', 'nfc_tap', {
+        restaurant: 'veta',
+        restaurant_name: 'VETA Grill Steakhouse Barcelona',
+        card_id: card.id,
+        card_name: card.name,
+        nfc_id: nfc,
+        source: 'nfc',
+        debug_mode: true
+      });
 
-      if (card) {
+    }
 
-        info.innerHTML = `
-          <h1>VETA NFC TEST</h1>
+    // Redirección rápida a Google Maps
+    setTimeout(function() {
 
-          <p><strong>NFC detectado:</strong></p>
-          <p>${nfc}</p>
+      window.location.href =
+        "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1";
 
-          <p><strong>Tarjeta:</strong></p>
-          <p>${card.id}</p>
-
-          <p><strong>Nombre:</strong></p>
-          <p>${card.name}</p>
-
-          <p style="color:green;font-weight:bold;">
-            ✓ NFC CORRECTAMENTE IDENTIFICADO
-          </p>
-        `;
-
-        // ENVIAR EVENTO A GOOGLE ANALYTICS
-        gtag('event', 'nfc_tap', {
-          restaurant: 'veta',
-          restaurant_name: 'VETA Grill Steakhouse Barcelona',
-          card_id: card.id,
-          card_name: card.name,
-          nfc_id: nfc,
-          source: 'nfc',
-          debug_mode: true
-        });
-
-      } else {
-
-        info.innerHTML = `
-          <h1>VETA NFC TEST</h1>
-
-          <p style="color:red;font-weight:bold;">
-            ✗ NFC NO IDENTIFICADO
-          </p>
-
-          <p>Valor recibido:</p>
-
-          <p>${nfc || "NINGUNO"}</p>
-        `;
-      }
-
-    });
+    }, 500);
   </script>
 </head>
 
 <body>
-
-  <div id="info" style="
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 40px 20px;
-  ">
-    <h1>Cargando...</h1>
-  </div>
-
 </body>
 </html>

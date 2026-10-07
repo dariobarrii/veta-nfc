@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>VETA Grill Steakhouse</title>
+  <title>VETA NFC</title>
 
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
 
   <script>
@@ -20,181 +19,22 @@
 
     gtag('config', 'G-7429GHXMBM');
 
-
-    // ==========================================
-    // CONFIGURACIÓN DE LAS TARJETAS VETA
-    // ==========================================
-
-const cards = {
-
-  "veta-01": {
-    id: "VETA-01",
-    name: "Arturo",
-    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-  },
-
-  "veta-02": {
-    id: "VETA-02",
-    name: "Carol",
-    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-  },
-
-  "veta-03": {
-    id: "VETA-03",
-    name: "Valentina",
-    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-  },
-
-  "veta-04": {
-    id: "VETA-04",
-    name: "Dario",
-    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-  },
-
-  "veta-05": {
-    id: "VETA-05",
-    name: "Belen",
-    url: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
-  }
-
-};
-
-
-    // ==========================================
-    // OBTENER NFC
-    // ==========================================
-
-    const params = new URLSearchParams(window.location.search);
-
-    const nfc = params.get("nfc");
-
-    const card = cards[nfc];
-
-
-    // ==========================================
-    // SI EL NFC ES VÁLIDO
-    // ==========================================
-
-    if (card) {
-
-      document.addEventListener("DOMContentLoaded", function() {
-
-        document.getElementById("title").textContent =
-          "VETA Grill Steakhouse";
-
-        document.getElementById("message").textContent =
-          "Abriendo Google Maps...";
-
-        document.getElementById("openMaps").href =
-          card.url;
-
-      });
-
-
-      // ==========================================
-      // REGISTRAR EL TOQUE
-      // ==========================================
-
-gtag('event', 'nfc_tap', {
-
-  restaurant: 'veta',
-
-  restaurant_name: 'VETA Grill Steakhouse Barcelona',
-
-  card_id: card.id,
-
-  card_name: card.name,
-
-  nfc_id: nfc,
-
-  source: 'nfc'
-
-});
-
-
-      // ==========================================
-      // REDIRECCIÓN
-      // ==========================================
-
-      setTimeout(function() {
-
-        window.location.href = card.url;
-
-      }, 1500);
-
-    }
-
-
-    // ==========================================
-    // NFC NO VÁLIDO
-    // ==========================================
-
-    else {
-
-      document.addEventListener("DOMContentLoaded", function() {
-
-        document.getElementById("title").textContent =
-          "NFC no identificado";
-
-        document.getElementById("message").textContent =
-          "Esta tarjeta no está registrada.";
-
-      });
-
-    }
-
+    gtag('event', 'nfc_tap', {
+      restaurant: 'veta',
+      restaurant_name: 'VETA Grill Steakhouse Barcelona',
+      card_id: 'VETA-03',
+      card_name: 'Valentina',
+      nfc_id: 'veta-03',
+      source: 'nfc'
+    });
   </script>
-
-
-  <style>
-
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px 20px;
-      background: #ffffff;
-      color: #222;
-    }
-
-    h1 {
-      font-size: 25px;
-      margin-bottom: 15px;
-    }
-
-    p {
-      font-size: 17px;
-    }
-
-    a {
-      display: inline-block;
-      margin-top: 25px;
-      padding: 15px 25px;
-      background: #4285F4;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-
-  </style>
 
 </head>
 
-
 <body>
 
-  <h1 id="title">
-    Cargando...
-  </h1>
-
-  <p id="message">
-    Preparando Google Maps...
-  </p>
-
-  <a id="openMaps" href="#">
-    Abrir Google Maps
-  </a>
+  <h1>VETA NFC</h1>
+  <p>Prueba de conexión</p>
 
 </body>
-
 </html>

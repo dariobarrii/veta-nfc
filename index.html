@@ -25,118 +25,158 @@
 
 <body>
 
-<div id="resultado" style="
-  font-family: Arial;
-  text-align: center;
-  padding: 50px;
-">
+  <div id="resultado" style="
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+  ">
 
-  <h1>VETA NFC</h1>
-  <p>Procesando tarjeta...</p>
+    <h1>VETA NFC</h1>
 
-</div>
+    <p>Procesando tarjeta...</p>
 
-<script>
-
-  const cards = {
-
-    "veta-01": {
-      id: "VETA-01",
-      name: "Arturo"
-    },
-
-    "veta-02": {
-      id: "VETA-02",
-      name: "Carol"
-    },
-
-    "veta-03": {
-      id: "VETA-03",
-      name: "Valentina"
-    },
-
-    "veta-04": {
-      id: "VETA-04",
-      name: "Dario"
-    },
-
-    "veta-05": {
-      id: "VETA-05",
-      name: "Belen"
-    }
-
-  };
+  </div>
 
 
-  const params = new URLSearchParams(
-    window.location.search
-  );
+  <script>
 
-  const nfc = params.get("nfc");
+    // TARJETAS NFC
+    const cards = {
 
-  const card = cards[nfc];
+      "veta-01": {
+        id: "VETA-01",
+        name: "Arturo"
+      },
+
+      "veta-02": {
+        id: "VETA-02",
+        name: "Carol"
+      },
+
+      "veta-03": {
+        id: "VETA-03",
+        name: "Valentina"
+      },
+
+      "veta-04": {
+        id: "VETA-04",
+        name: "Dario"
+      },
+
+      "veta-05": {
+        id: "VETA-05",
+        name: "Belen"
+      }
+
+    };
 
 
-  if (card) {
+    // OBTENER ID DE LA TARJETA
+    const params = new URLSearchParams(
+      window.location.search
+    );
 
-    document.getElementById("resultado").innerHTML = `
-      <h1>NFC detectado ✅</h1>
+    const nfc = params.get("nfc");
 
-      <p><strong>Tarjeta:</strong> ${card.id}</p>
-
-      <p><strong>Nombre:</strong> ${card.name}</p>
-
-      <p><strong>ID:</strong> ${nfc}</p>
-
-      <p style="color:green;">
-        Enviando evento a Google Analytics...
-      </p>
-    `;
+    const card = cards[nfc];
 
 
-    setTimeout(function() {
+    // SI ENCONTRAMOS LA TARJETA
+    if (card) {
 
-      gtag('event', 'nfc_tap', {
+      document.getElementById("resultado").innerHTML = `
 
-        restaurant: 'veta',
+        <h1>NFC detectado ✅</h1>
 
-        restaurant_name:
-          'VETA Grill Steakhouse Barcelona',
-
-        card_id: card.id,
-
-        card_name: card.name,
-
-        nfc_id: nfc,
-
-        source: 'nfc',
-
-        debug_mode: true
-
-      });
-
-      console.log("NFC_TAP ENVIADO", card);
-
-      document.getElementById("resultado").innerHTML += `
-        <p style="color:green;">
-          ✅ nfc_tap enviado
+        <p>
+          <strong>Tarjeta:</strong>
+          ${card.id}
         </p>
+
+        <p>
+          <strong>Nombre:</strong>
+          ${card.name}
+        </p>
+
+        <p>
+          <strong>NFC ID:</strong>
+          ${nfc}
+        </p>
+
+        <p style="color: orange;">
+          Enviando evento a Google Analytics...
+        </p>
+
       `;
 
-    }, 3000);
+
+      // ESPERAMOS 3 SEGUNDOS
+      setTimeout(function() {
 
 
-  } else {
+        // ENVIAR EVENTO DE PRUEBA
+        gtag('event', 'nfc_test', {
 
-    document.getElementById("resultado").innerHTML = `
-      <h1>VETA NFC</h1>
+          restaurant: 'veta',
 
-      <p>No se detectó ninguna tarjeta.</p>
-    `;
+          restaurant_name:
+            'VETA Grill Steakhouse Barcelona',
 
-  }
+          card_id:
+            card.id,
 
-</script>
+          card_name:
+            card.name,
+
+          nfc_id:
+            nfc,
+
+          source:
+            'nfc',
+
+          debug_mode:
+            true
+
+        });
+
+
+        // MENSAJE EN CONSOLA
+        console.log(
+          "NFC_TEST ENVIADO",
+          card
+        );
+
+
+        // MENSAJE EN PANTALLA
+        document.getElementById("resultado").innerHTML += `
+
+          <p style="color: green; font-weight: bold;">
+            ✅ nfc_test enviado
+          </p>
+
+        `;
+
+
+      }, 3000);
+
+
+    } else {
+
+
+      // SI NO HAY TARJETA
+      document.getElementById("resultado").innerHTML = `
+
+        <h1>VETA NFC</h1>
+
+        <p>
+          No se detectó ninguna tarjeta.
+        </p>
+
+      `;
+
+    }
+
+  </script>
 
 </body>
 </html>

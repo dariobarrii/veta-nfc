@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Google Reviews</title>
+  <title>VETA Grill Steakhouse</title>
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7429GHXMBM"></script>
@@ -20,95 +20,94 @@
 
     gtag('config', 'G-7429GHXMBM');
 
+
     // ==========================================
-    // CONFIGURACIÓN DE RESTAURANTES
+    // TARJETAS NFC VETA
     // ==========================================
 
-    const restaurants = {
+    const nfcCards = {
 
-      "veta": {
-        name: "VETA Grill Steakhouse Barcelona",
+      "veta-01": {
+        restaurant: "VETA Grill Steakhouse Barcelona",
+        card: "VETA-01",
         reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
       },
 
-      "feral": {
-        name: "Feral Steakhouse Barcelona",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a3cc9ee3d1a5:0x950e4752bdda0102!12e1"
+      "veta-02": {
+        restaurant: "VETA Grill Steakhouse Barcelona",
+        card: "VETA-02",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
       },
 
-      "tzura": {
-        name: "Tzura Steak House",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a35c26885825:0xa52c4df1ad24f88c!12e1"
+      "veta-03": {
+        restaurant: "VETA Grill Steakhouse Barcelona",
+        card: "VETA-03",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
       },
 
-      "don-asador": {
-        name: "Don Asador",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a368d076db3f:0x2bb996be1348746!12e1"
+      "veta-04": {
+        restaurant: "VETA Grill Steakhouse Barcelona",
+        card: "VETA-04",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
       },
 
-      "barcelona-grill": {
-        name: "Barcelona Grill Steak House",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30acac16ca5:0x8429d9c0488aa1f!12e1"
-      },
-
-      "the-barcelona-grill": {
-        name: "The Barcelona Grill - Barcelona Steakhouse",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a37d485f1653:0xd8f17e044334a841!12e1"
-      },
-
-      "abanic": {
-        name: "Abanic Restaurant",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a300bb618e67:0x8645d10d25e6703!12e1"
-      },
-
-      "asado-libre": {
-        name: "Asado Libre Buffet de Carnes Argentinas",
-        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a377851e52bb:0x76bb266bf8252a7b!12e1"
+      "veta-05": {
+        restaurant: "VETA Grill Steakhouse Barcelona",
+        card: "VETA-05",
+        reviewUrl: "https://www.google.com/maps/place//data=!4m3!3m2!1s0x12a4a30018c23335:0xe28d19552d1b78ea!12e1"
       }
 
     };
 
 
     // ==========================================
-    // OBTENER EL NFC DESDE LA URL
+    // OBTENER IDENTIFICADOR NFC
     // ==========================================
 
     const params = new URLSearchParams(window.location.search);
+
     const nfc = params.get("nfc");
 
-    const restaurant = restaurants[nfc];
+    const card = nfcCards[nfc];
 
 
     // ==========================================
-    // SI EL NFC ES VÁLIDO
+    // NFC VÁLIDO
     // ==========================================
 
-    if (restaurant) {
+    if (card) {
 
-      // Mostrar nombre del restaurante
       document.addEventListener("DOMContentLoaded", function() {
 
         document.getElementById("restaurantName").textContent =
-          restaurant.name;
+          card.restaurant;
+
+        document.getElementById("message").textContent =
+          "Abriendo Google Maps...";
 
         document.getElementById("openMaps").href =
-          restaurant.reviewUrl;
+          card.reviewUrl;
 
       });
 
 
-      // Registrar el toque NFC en Google Analytics
+      // ==========================================
+      // REGISTRAR TOQUE NFC
+      // ==========================================
+
       gtag('event', 'nfc_tap', {
 
-        restaurant: nfc,
+        restaurant: card.restaurant,
 
-        restaurant_name: restaurant.name,
+        card_id: card.card,
+
+        nfc_id: nfc,
 
         source: 'nfc',
 
         event_callback: function() {
 
-          window.location.href = restaurant.reviewUrl;
+          window.location.href = card.reviewUrl;
 
         },
 
@@ -117,12 +116,13 @@
       });
 
 
-      // Seguridad:
-      // Si Analytics no responde, redirigir igualmente después de 1 segundo.
+      // ==========================================
+      // REDIRECCIÓN DE SEGURIDAD
+      // ==========================================
 
       setTimeout(function() {
 
-        window.location.href = restaurant.reviewUrl;
+        window.location.href = card.reviewUrl;
 
       }, 1200);
 
@@ -130,7 +130,7 @@
 
 
     // ==========================================
-    // SI NO SE ENCUENTRA EL NFC
+    // NFC NO IDENTIFICADO
     // ==========================================
 
     else {
@@ -141,7 +141,7 @@
           "NFC no identificado";
 
         document.getElementById("message").textContent =
-          "No se ha identificado esta tarjeta NFC.";
+          "Esta tarjeta NFC no está registrada.";
 
       });
 
@@ -153,56 +153,32 @@
   <style>
 
     body {
-
       font-family: Arial, sans-serif;
-
       text-align: center;
-
       padding: 40px 20px;
-
       background: #ffffff;
-
       color: #222;
-
     }
-
 
     h1 {
-
       font-size: 24px;
-
       margin-bottom: 15px;
-
     }
-
 
     p {
-
       font-size: 17px;
-
       line-height: 1.5;
-
     }
 
-
     a {
-
       display: inline-block;
-
       margin-top: 20px;
-
       padding: 15px 25px;
-
       background: #4285F4;
-
       color: white;
-
       text-decoration: none;
-
       border-radius: 8px;
-
       font-weight: bold;
-
     }
 
   </style>

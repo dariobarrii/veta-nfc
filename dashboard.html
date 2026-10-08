@@ -19,7 +19,37 @@
 
     h1 {
       text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .update-container {
+      text-align: center;
       margin-bottom: 30px;
+    }
+
+    #updateButton {
+      background: #2a2a2a;
+      color: white;
+      border: 1px solid #555;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #updateButton:hover {
+      background: #3a3a3a;
+    }
+
+    #updateButton:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #status {
+      margin-top: 10px;
+      color: #aaa;
+      font-size: 14px;
     }
 
     .cards {
@@ -86,6 +116,18 @@
 
 <h1>Veta Steak House</h1>
 
+<div class="update-container">
+
+  <button id="updateButton" onclick="loadData()">
+    🔄 Actualizar datos
+  </button>
+
+  <div id="status">
+    Cargando datos...
+  </div>
+
+</div>
+
 <div class="cards">
 
   <div class="card">
@@ -144,175 +186,226 @@ const SUPABASE_KEY =
 const RESTAURANT =
   "Veta Steak House";
 
+let tapsChart = null;
+
 
 async function loadData() {
 
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/nfc_events?select=*&restaurant=eq.${encodeURIComponent(RESTAURANT)}&event=eq.nfc_tap&order=created_at.desc`,
-    {
-      headers: {
-        "apikey": SUPABASE_KEY,
-        "Authorization": `Bearer ${SUPABASE_KEY}`
+  const button = document.getElementById("updateButton");
+  const status = document.getElementById("status");
+
+  button.disabled = true;
+  button.textContent = "⏳ Actualizando...";
+  status.textContent = "Consultando datos...";
+
+  try {
+
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/nfc_events?select=*&restaurant=eq.${encodeURIComponent(RESTAURANT)}&event=eq.nfc_tap&order=created_at.desc`,
+      {
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`
+        }
       }
-    }
-  );
-
-  const data = await response.json();
-
-  if (!Array.isArray(data)) {
-    console.error(data);
-    return;
-  }
-
-  const now = new Date();
-
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(now.getDate() - 7);
-
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(now.getDate() - 30);
-
-
-  const today = data.filter(item =>
-    new Date(item.created_at) >= todayStart
-  ).length;
-
-
-  const sevenDays = data.filter(item =>
-    new Date(item.created_at) >= sevenDaysAgo
-  ).length;
-
-
-  const thirtyDays = data.filter(item =>
-    new Date(item.created_at) >= thirtyDaysAgo
-  ).length;
-
-
-  document.getElementById("total").textContent =
-    data.length;
-
-  document.getElementById("today").textContent =
-    today;
-
-  document.getElementById("sevenDays").textContent =
-    sevenDays;
-
-  document.getElementById("thirtyDays").textContent =
-    thirtyDays;
-
-
-  // Últimos taps
-
-  const table = document.getElementById("tapTable");
-
-  table.innerHTML = "";
-
-  data.slice(0, 20).forEach(item => {
-
-    const date = new Date(item.created_at);
-
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${date.toLocaleDateString("es-ES")}</td>
-      <td>${date.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit"
-      })}</td>
-    `;
-
-    table.appendChild(row);
-
-  });
-
-
-  // Gráfico últimos 30 días
-
-  const labels = [];
-  const values = [];
-
-  for (let i = 29; i >= 0; i--) {
-
-    const date = new Date();
-
-    date.setDate(date.getDate() - i);
-
-    date.setHours(0, 0, 0, 0);
-
-    const nextDay = new Date(date);
-    nextDay.setDate(nextDay.getDate() + 1);
-
-    const count = data.filter(item => {
-
-      const eventDate = new Date(item.created_at);
-
-      return eventDate >= date && eventDate < nextDay;
-
-    }).length;
-
-    labels.push(
-      date.toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "2-digit"
-      })
     );
 
-    values.push(count);
+    if (!response.ok) {
+      throw new Error("Error al consultar Supabase");
+    }
 
-  }
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("Los datos recibidos no son válidos");
+    }
 
 
-  new Chart(
-    document.getElementById("tapsChart"),
-    {
-      type: "line",
+    const now = new Date();
 
-      data: {
-        labels: labels,
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
 
-        datasets: [{
-          label: "Taps por día",
-          data: values,
-          tension: 0.3,
-          fill: false
-        }]
-      },
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
 
-      options: {
-        responsive: true,
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(now.getDate() - 30);
 
-        plugins: {
-          legend: {
-            labels: {
-              color: "white"
-            }
-          }
+
+    const today = data.filter(item =>
+      new Date(item.created_at) >= todayStart
+    ).length;
+
+
+    const sevenDays = data.filter(item =>
+      new Date(item.created_at) >= sevenDaysAgo
+    ).length;
+
+
+    const thirtyDays = data.filter(item =>
+      new Date(item.created_at) >= thirtyDaysAgo
+    ).length;
+
+
+    document.getElementById("total").textContent =
+      data.length;
+
+    document.getElementById("today").textContent =
+      today;
+
+    document.getElementById("sevenDays").textContent =
+      sevenDays;
+
+    document.getElementById("thirtyDays").textContent =
+      thirtyDays;
+
+
+    // Últimos taps
+
+    const table = document.getElementById("tapTable");
+
+    table.innerHTML = "";
+
+    data.slice(0, 20).forEach(item => {
+
+      const date = new Date(item.created_at);
+
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${date.toLocaleDateString("es-ES")}</td>
+        <td>${date.toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit"
+        })}</td>
+      `;
+
+      table.appendChild(row);
+
+    });
+
+
+    // Gráfico de los últimos 30 días
+
+    const labels = [];
+    const values = [];
+
+    for (let i = 29; i >= 0; i--) {
+
+      const date = new Date();
+
+      date.setDate(date.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+
+      const nextDay = new Date(date);
+      nextDay.setDate(nextDay.getDate() + 1);
+
+      const count = data.filter(item => {
+
+        const eventDate = new Date(item.created_at);
+
+        return eventDate >= date && eventDate < nextDay;
+
+      }).length;
+
+      labels.push(
+        date.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "2-digit"
+        })
+      );
+
+      values.push(count);
+
+    }
+
+
+    // Eliminar gráfico anterior antes de crear uno nuevo
+
+    if (tapsChart) {
+      tapsChart.destroy();
+    }
+
+
+    tapsChart = new Chart(
+      document.getElementById("tapsChart"),
+      {
+        type: "line",
+
+        data: {
+          labels: labels,
+
+          datasets: [{
+            label: "Taps por día",
+            data: values,
+            tension: 0.3,
+            fill: false
+          }]
         },
 
-        scales: {
-          x: {
-            ticks: {
-              color: "#aaa"
+        options: {
+          responsive: true,
+
+          plugins: {
+            legend: {
+              labels: {
+                color: "white"
+              }
             }
           },
 
-          y: {
-            beginAtZero: true,
-            ticks: {
-              color: "#aaa",
-              precision: 0
+          scales: {
+
+            x: {
+              ticks: {
+                color: "#aaa"
+              }
+            },
+
+            y: {
+              beginAtZero: true,
+
+              ticks: {
+                color: "#aaa",
+                precision: 0
+              }
             }
+
           }
+
         }
+
       }
-    }
-  );
+    );
+
+
+    const hora = new Date().toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    status.textContent =
+      `Última actualización: ${hora}`;
+
+  } catch (error) {
+
+    console.error(error);
+
+    status.textContent =
+      "❌ No se pudieron actualizar los datos.";
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "🔄 Actualizar datos";
+
+  }
 
 }
 
+
+// Cargar automáticamente al abrir
 
 loadData();
 

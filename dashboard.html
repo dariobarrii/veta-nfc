@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard - Veta Steak House</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .card {
+      background: #1d1d1d;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .card p {
+      margin-top: 8px;
+      color: #bbb;
+    }
+
+    .chart-container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: #1d1d1d;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .table-container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: #1d1d1d;
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #333;
+      text-align: center;
+    }
+
+    th {
+      color: #bbb;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Veta Steak House</h1>
+
+<div class="cards">
+
+  <div class="card">
+    <h2 id="total">0</h2>
+    <p>Taps totales</p>
+  </div>
+
+  <div class="card">
+    <h2 id="today">0</h2>
+    <p>Taps hoy</p>
+  </div>
+
+  <div class="card">
+    <h2 id="sevenDays">0</h2>
+    <p>Últimos 7 días</p>
+  </div>
+
+  <div class="card">
+    <h2 id="thirtyDays">0</h2>
+    <p>Últimos 30 días</p>
+  </div>
+
+</div>
+
+<div class="chart-container">
+  <canvas id="tapsChart"></canvas>
+</div>
+
+<div class="table-container">
+
+  <h2>Últimos taps</h2>
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Hora</th>
+      </tr>
+    </thead>
+
+    <tbody id="tapTable"></tbody>
+
+  </table>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+  "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
+
+const RESTAURANT =
+  "Veta Steak House";
+
+
+async function loadData() {
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/nfc_events?select=*&restaurant=eq.${encodeURIComponent(RESTAURANT)}&event=eq.nfc_tap&order=created_at.desc`,
+    {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`
+      }
+    }
+  );
+
+  const data = await response.json();
+
+  if (!Array.isArray(data)) {
+    console.error(data);
+    return;
+  }
+
+  const now = new Date();
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(now.getDate() - 7);
+
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(now.getDate() - 30);
+
+
+  const today = data.filter(item =>
+    new Date(item.created_at) >= todayStart
+  ).length;
+
+
+  const sevenDays = data.filter(item =>
+    new Date(item.created_at) >= sevenDaysAgo
+  ).length;
+
+
+  const thirtyDays = data.filter(item =>
+    new Date(item.created_at) >= thirtyDaysAgo
+  ).length;
+
+
+  document.getElementById("total").textContent =
+    data.length;
+
+  document.getElementById("today").textContent =
+    today;
+
+  document.getElementById("sevenDays").textContent =
+    sevenDays;
+
+  document.getElementById("thirtyDays").textContent =
+    thirtyDays;
+
+
+  // Últimos taps
+
+  const table = document.getElementById("tapTable");
+
+  table.innerHTML = "";
+
+  data.slice(0, 20).forEach(item => {
+
+    const date = new Date(item.created_at);
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${date.toLocaleDateString("es-ES")}</td>
+      <td>${date.toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit"
+      })}</td>
+    `;
+
+    table.appendChild(row);
+
+  });
+
+
+  // Gráfico últimos 30 días
+
+  const labels = [];
+  const values = [];
+
+  for (let i = 29; i >= 0; i--) {
+
+    const date = new Date();
+
+    date.setDate(date.getDate() - i);
+
+    date.setHours(0, 0, 0, 0);
+
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    const count = data.filter(item => {
+
+      const eventDate = new Date(item.created_at);
+
+      return eventDate >= date && eventDate < nextDay;
+
+    }).length;
+
+    labels.push(
+      date.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "2-digit"
+      })
+    );
+
+    values.push(count);
+
+  }
+
+
+  new Chart(
+    document.getElementById("tapsChart"),
+    {
+      type: "line",
+
+      data: {
+        labels: labels,
+
+        datasets: [{
+          label: "Taps por día",
+          data: values,
+          tension: 0.3,
+          fill: false
+        }]
+      },
+
+      options: {
+        responsive: true,
+
+        plugins: {
+          legend: {
+            labels: {
+              color: "white"
+            }
+          }
+        },
+
+        scales: {
+          x: {
+            ticks: {
+              color: "#aaa"
+            }
+          },
+
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: "#aaa",
+              precision: 0
+            }
+          }
+        }
+      }
+    }
+  );
+
+}
+
+
+loadData();
+
+</script>
+
+</body>
+</html>

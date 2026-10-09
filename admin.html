@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administración - VETA Steak House</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    main {
+      max-width: 430px;
+      margin: 40px auto;
+      padding: 25px;
+      background: #1d1d1d;
+      border-radius: 12px;
+      border-top: 2px solid #a98454;
+    }
+    h1 { text-align: center; }
+    p { color: #aaa; line-height: 1.5; }
+    label { display: block; margin: 20px 0 8px; }
+    input, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    input {
+      color: white;
+      background: #111;
+      border: 1px solid #555;
+    }
+    button {
+      margin-top: 22px;
+      background: #a98454;
+      color: #111;
+      font-weight: bold;
+      border: 0;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .6; }
+    #status { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>VETA Steak House</h1>
+  <p>Actualizá manualmente el total de reseñas que aparece en Google.</p>
+
+  <form id="form">
+    <label for="count">Total de reseñas</label>
+    <input id="count" type="number" min="0" step="1"
+           placeholder="Ej. 3801" required>
+
+    <label for="token">Clave de administración</label>
+    <input id="token" type="password" autocomplete="off"
+           placeholder="Tu clave secreta" required>
+
+    <button id="save" type="submit">Guardar total</button>
+  </form>
+
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
+
+<script>
+const SUPABASE_URL = "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
+const RESTAURANT = "Veta Steak House";
+
+document.getElementById("form").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const count = Number(document.getElementById("count").value);
+  const token = document.getElementById("token").value;
+  const status = document.getElementById("status");
+  const button = document.getElementById("save");
+
+  if (!Number.isSafeInteger(count) || count < 0) {
+    status.textContent = "Ingresá un número entero válido.";
+    return;
+  }
+
+  button.disabled = true;
+  status.textContent = "Guardando...";
+
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/super-function`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`,
+          "x-reviews-token": token
+        },
+        body: JSON.stringify({
+          restaurant: RESTAURANT,
+          review_count: count
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || `Error ${response.status}`);
+    }
+
+    status.textContent =
+      `Guardado correctamente: ${RESTAURANT}, ${count} reseñas.`;
+    document.getElementById("token").value = "";
+
+  } catch (error) {
+    status.textContent = `No se pudo guardar: ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

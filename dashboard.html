@@ -390,7 +390,6 @@
 </main>
 
 <script>
-  // CONFIGURACIÓN
   const SUPABASE_URL = "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
   const SUPABASE_KEY = "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
 
@@ -486,7 +485,6 @@
     }).format(new Date()));
   }
 
-  // ESTADÍSTICAS E HISTORIAL NFC
   async function loadTapData() {
     setText("chartStatus", "Cargando datos del gráfico…");
     setText("eventsStatus", "");
@@ -556,9 +554,8 @@
 
         const eventCell = document.createElement("td");
 
-        // CORRECCIÓN: mostrar un número de interacción en lugar de "nfc_tap".
-        // La numeración comienza en 1 para la interacción más reciente.
-        eventCell.textContent = `N.º ${index + 1}`;
+        // Numeración cronológica: la más antigua de las filas mostradas es N.º 1.
+        eventCell.textContent = `N.º ${recentEvents.length - index}`;
 
         const restaurantCell = document.createElement("td");
         restaurantCell.textContent = event.restaurant || RESTAURANT;
@@ -579,7 +576,6 @@
     });
 
     const context = document.getElementById("tapsChart").getContext("2d");
-
     if (tapsChart) tapsChart.destroy();
 
     tapsChart = new Chart(context, {
@@ -622,7 +618,6 @@
     });
   }
 
-  // RESEÑAS DIARIAS
   async function loadDailyReviewTotals() {
     const day = localDateKey();
 
@@ -765,6 +760,7 @@
       }
 
       await loadDailyReviewTotals();
+
       status.textContent = isOpening
         ? "Apertura guardada correctamente."
         : "Cierre guardado correctamente.";
@@ -778,7 +774,6 @@
     }
   }
 
-  // ACTUALIZAR TODO
   async function refreshDashboard() {
     if (refreshInProgress) return;
     refreshInProgress = true;

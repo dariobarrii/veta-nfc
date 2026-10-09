@@ -4,754 +4,1000 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Veta Steak House</title>
+  <title>VETA Steak House | Dashboard NFC</title>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    body {
-      margin: 0;
-      padding: 30px;
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
+    :root {
+      --bg: #101010;
+      --panel: #1b1b1b;
+      --panel2: #151515;
+      --brown: #b58a5a;
+      --brown-border: #493725;
+      --text: #f5f1eb;
+      --muted: #a6a09a;
+      --green: #8ac49b;
+      --red: #e59b91;
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 15px;
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 28px 20px 50px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      color: var(--brown);
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      margin: 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .date-label {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
     }
 
     .section-title {
-      max-width: 1000px;
-      margin: 32px auto 16px;
-      color: #b58a5a;
+      color: var(--brown);
       font-size: 17px;
-      letter-spacing: 1px;
-    }
-
-    .update-container {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    #updateButton {
-      background: #2a2a2a;
-      color: white;
-      border: 1px solid #555;
-      padding: 12px 22px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #updateButton:hover {
-      background: #3a3a3a;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: wait;
-    }
-
-    #status {
-      margin-top: 10px;
-      color: #aaa;
-      font-size: 14px;
-      overflow-wrap: anywhere;
+      margin: 30px 0 15px;
+      font-weight: 700;
     }
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-      max-width: 1000px;
-      margin: auto;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
     }
 
     .card {
-      background: #1d1d1d;
-      border-radius: 12px;
-      padding: 22px 15px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      border: 1px solid #292929;
       min-width: 0;
+      background: var(--panel);
+      border: 1px solid #30271f;
+      border-radius: 13px;
+      padding: 21px;
+      box-shadow: 0 5px 18px rgba(0, 0, 0, .15);
     }
 
-    .card h2 {
-      margin: 0;
+    .card h3 {
+      font-size: 14px;
+      line-height: 1.45;
+      color: #d5cec5;
+      font-weight: 500;
+      margin: 0 0 15px;
+    }
+
+    .number {
+      color: var(--brown);
       font-size: 32px;
+      font-weight: 750;
+      line-height: 1.2;
       overflow-wrap: anywhere;
     }
 
-    .card p {
+    .card-note {
+      color: var(--muted);
+      font-size: 12px;
       margin-top: 10px;
-      margin-bottom: 0;
-      color: #bbb;
-      line-height: 1.5;
-      font-size: 14px;
     }
 
-    .review-card {
-      border-color: #453525;
+    .review-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .review-card h2 {
-      color: #b58a5a;
+    .review-cards .card {
+      background: linear-gradient(145deg, #1c1b19, #141414);
+      border: 1px solid var(--brown-border);
+      padding: 23px;
+    }
+
+    .review-cards h3 {
+      color: var(--brown);
+      font-size: 15px;
+      font-weight: 700;
+      min-height: 40px;
+      margin: 0 0 14px;
+    }
+
+    .review-cards label {
+      display: block;
+      margin: 16px 0 7px;
+      color: #ded8d0;
+      font-size: 13px;
+    }
+
+    .review-cards input {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid #51402e;
+      border-radius: 8px;
+      background: #101010;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .review-cards input:focus {
+      border-color: var(--brown);
+      box-shadow: 0 0 0 2px rgba(181, 138, 90, .15);
+    }
+
+    .review-cards button,
+    .refresh-button {
+      border: 0;
+      border-radius: 8px;
+      background: var(--brown);
+      color: #15110d;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 12px 15px;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .review-cards button {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .review-cards button:hover,
+    .refresh-button:hover {
+      background: #c99e70;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .review-status {
+      min-height: 17px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
     }
 
     .review-note {
-      color: #8e8377;
+      color: var(--muted);
       font-size: 12px;
       line-height: 1.5;
       margin-top: 12px;
     }
 
-    .review-input {
-      display: block;
+    .positive {
+      color: var(--green);
+    }
+
+    .negative {
+      color: var(--red);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid #30271f;
+      border-radius: 13px;
+      padding: 22px;
+      margin-top: 18px;
+      min-width: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .panel h2 {
+      color: var(--brown);
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .chart-wrap {
+      position: relative;
       width: 100%;
-      box-sizing: border-box;
-      margin-top: 15px;
-      padding: 11px 8px;
-      border: 1px solid #51402e;
-      border-radius: 7px;
-      background: #111;
-      color: #f5f1eb;
-      text-align: center;
-      font-size: 18px;
-      outline: none;
+      height: 300px;
     }
 
-    .review-input:focus {
-      border-color: #b58a5a;
-    }
-
-    .save-button {
+    .table-wrap {
       width: 100%;
-      margin-top: 10px;
-      padding: 11px 8px;
-      border: 1px solid #6e5438;
-      border-radius: 7px;
-      background: #b58a5a;
-      color: #111;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .save-button:hover {
-      background: #c69b6d;
-    }
-
-    .save-status {
-      min-height: 30px;
-      margin-top: 9px;
-      color: #aaa;
-      font-size: 12px;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
-    .chart-container {
-      max-width: 1000px;
-      margin: 30px auto;
-      background: #1d1d1d;
-      padding: 20px;
-      border-radius: 12px;
-      box-sizing: border-box;
-    }
-
-    .table-container {
-      max-width: 1000px;
-      margin: 30px auto;
-      background: #1d1d1d;
-      padding: 20px;
-      border-radius: 12px;
       overflow-x: auto;
-      box-sizing: border-box;
     }
 
     table {
-      width: 100%;
       border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #333;
-      text-align: center;
+      width: 100%;
+      min-width: 440px;
+      font-size: 13px;
     }
 
     th {
-      color: #bbb;
+      color: var(--brown);
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 1px solid #423326;
+      padding: 13px 10px;
     }
 
-    .empty-message {
-      color: #aaa;
-      text-align: center;
-      padding: 18px;
+    td {
+      color: #ddd6ce;
+      padding: 13px 10px;
+      border-bottom: 1px solid #2b2926;
     }
 
-    @media (max-width: 600px) {
-      body {
-        padding: 20px 14px;
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 20px 0;
+      font-size: 13px;
+    }
+
+    .page-status {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 850px) {
+      .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .card h2 {
-        font-size: 28px;
+      .review-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .container {
+        padding: 22px 13px 35px;
       }
 
-      .chart-container,
-      .table-container {
-        padding: 14px;
+      .brand {
+        font-size: 24px;
+      }
+
+      .cards,
+      .review-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .card,
+      .review-cards .card,
+      .panel {
+        padding: 18px;
+      }
+
+      .review-cards h3 {
+        min-height: 0;
+      }
+
+      .date-label {
+        text-align: left;
+      }
+
+      .chart-wrap {
+        height: 260px;
       }
     }
   </style>
 </head>
 
 <body>
+  <main class="container">
+    <header>
+      <div>
+        <h1 class="brand">VETA</h1>
+        <div class="subtitle">Steak House · Panel de seguimiento NFC</div>
+      </div>
+      <div>
+        <div class="date-label" id="todayLabel">Cargando fecha…</div>
+        <div class="date-label" id="lastUpdated" style="margin-top:7px">
+          Cargando datos…
+        </div>
+      </div>
+    </header>
 
-<h1>Veta Steak House</h1>
+    <!-- ESTADÍSTICAS NFC -->
+    <h2 class="section-title">Interacciones NFC</h2>
 
-<div class="update-container">
-  <button id="updateButton" onclick="loadData()">
-    🔄 Actualizar datos
-  </button>
-  <div id="status">Cargando datos...</div>
-</div>
+    <section class="cards">
+      <article class="card">
+        <h3>Interacciones de hoy</h3>
+        <div class="number" id="tapsToday">—</div>
+        <div class="card-note">Lecturas registradas hoy</div>
+      </article>
 
-<h2 class="section-title">Interacciones NFC</h2>
+      <article class="card">
+        <h3>Interacciones últimos 7 días</h3>
+        <div class="number" id="tapsWeek">—</div>
+        <div class="card-note">Actividad de la última semana</div>
+      </article>
 
-<div class="cards">
-  <div class="card">
-    <h2 id="total">—</h2>
-    <p>Taps totales</p>
-  </div>
+      <article class="card">
+        <h3>Interacciones últimos 30 días</h3>
+        <div class="number" id="tapsMonth">—</div>
+        <div class="card-note">Actividad del último mes</div>
+      </article>
 
-  <div class="card">
-    <h2 id="today">—</h2>
-    <p>Taps hoy</p>
-  </div>
+      <article class="card">
+        <h3>Total de interacciones</h3>
+        <div class="number" id="tapsTotal">—</div>
+        <div class="card-note">Total de registros NFC</div>
+      </article>
+    </section>
 
-  <div class="card">
-    <h2 id="sevenDays">—</h2>
-    <p>Últimos 7 días</p>
-  </div>
+    <!-- RESEÑAS: APERTURA, CIERRE Y DIFERENCIA -->
+    <h2 class="section-title">Seguimiento diario de reseñas de Google</h2>
 
-  <div class="card">
-    <h2 id="thirtyDays">—</h2>
-    <p>Últimos 30 días</p>
-  </div>
-</div>
+    <section class="cards review-cards">
+      <article class="card">
+        <h3>Reseñas al comenzar el día</h3>
+        <div class="number" id="openingDisplay">—</div>
 
-<h2 class="section-title">Reseñas de Google</h2>
+        <label for="openingInput">Total de reseñas al abrir</label>
+        <input
+          type="number"
+          id="openingInput"
+          min="0"
+          step="1"
+          inputmode="numeric"
+          placeholder="Ej.: 657"
+        >
 
-<div class="cards">
+        <button type="button" id="saveOpeningButton">
+          Guardar apertura
+        </button>
 
-  <div class="card review-card">
-    <h2 id="reviewCurrent">—</h2>
-    <p>Reseñas al comenzar el día</p>
+        <div class="review-status" id="openingStatus" aria-live="polite"></div>
+      </article>
 
-    <input
-      id="openingInput"
-      class="review-input"
-      type="number"
-      min="0"
-      step="1"
-      inputmode="numeric"
-      placeholder="Total de apertura"
-      aria-label="Total de reseñas al comenzar el día"
-    >
+      <article class="card">
+        <h3>Reseñas al terminar el día</h3>
+        <div class="number" id="closingDisplay">—</div>
 
-    <button
-      id="saveOpeningButton"
-      class="save-button"
-      onclick="saveDailyValue('opening_count')"
-    >
-      Guardar apertura
-    </button>
+        <label for="closingInput">Total de reseñas al cerrar</label>
+        <input
+          type="number"
+          id="closingInput"
+          min="0"
+          step="1"
+          inputmode="numeric"
+          placeholder="Ej.: 660"
+        >
 
-    <div id="openingStatus" class="save-status"></div>
-  </div>
+        <button type="button" id="saveClosingButton">
+          Guardar cierre
+        </button>
 
-  <div class="card review-card">
-    <h2 id="reviewBaseline">—</h2>
-    <p>Reseñas al terminar el día</p>
+        <div class="review-status" id="closingStatus" aria-live="polite"></div>
+      </article>
 
-    <input
-      id="closingInput"
-      class="review-input"
-      type="number"
-      min="0"
-      step="1"
-      inputmode="numeric"
-      placeholder="Total de cierre"
-      aria-label="Total de reseñas al terminar el día"
-    >
+      <article class="card">
+        <h3>Reseñas ganadas hoy</h3>
+        <div class="number" id="reviewsGainedDisplay">—</div>
+        <p class="review-note" id="reviewsGainedNote">
+          Guardá la apertura y el cierre para calcular la diferencia.
+        </p>
+      </article>
+    </section>
 
-    <button
-      id="saveClosingButton"
-      class="save-button"
-      onclick="saveDailyValue('closing_count')"
-    >
-      Guardar cierre
-    </button>
+    <!-- GRÁFICO -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Interacciones NFC · Últimos 30 días</h2>
+        <button type="button" class="refresh-button" id="refreshButton">
+          Actualizar datos
+        </button>
+      </div>
 
-    <div id="closingStatus" class="save-status"></div>
-  </div>
+      <div class="chart-wrap">
+        <canvas id="tapsChart"></canvas>
+      </div>
+      <div class="page-status" id="chartStatus"></div>
+    </section>
 
-  <div class="card review-card">
-    <h2 id="reviewsToday">—</h2>
-    <p>Reseñas ganadas hoy</p>
-    <div class="review-note">
-      Diferencia entre apertura y cierre.
+    <!-- HISTORIAL -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Últimas interacciones NFC</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha y hora</th>
+              <th>Evento</th>
+              <th>Restaurante</th>
+            </tr>
+          </thead>
+          <tbody id="eventsTableBody">
+            <tr>
+              <td colspan="3" class="empty">Cargando interacciones…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="page-status" id="eventsStatus"></div>
+    </section>
+
+    <div class="page-status" id="generalStatus">
+      Conectando con Supabase…
     </div>
-  </div>
+  </main>
 
-</div>
+  <script>
+    // --------------------------------------------------
+    // CONFIGURACIÓN DE SUPABASE
+    // --------------------------------------------------
+    const SUPABASE_URL = "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
 
-<div class="chart-container">
-  <canvas id="tapsChart"></canvas>
-</div>
+    const RESTAURANT = "Veta Steak House";
+    const EVENTS_TABLE = "nfc_events";
+    const DAILY_TABLE = "veta_daily_review_totals";
 
-<div class="table-container">
-  <h2>Últimos taps</h2>
+    const API_HEADERS = {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY
+    };
 
-  <table>
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Hora</th>
-      </tr>
-    </thead>
+    let tapsChart = null;
+    let currentDailyRow = null;
+    let refreshInProgress = false;
 
-    <tbody id="tapTable">
-      <tr>
-        <td colspan="2" class="empty-message">Cargando...</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    // --------------------------------------------------
+    // UTILIDADES
+    // --------------------------------------------------
+    function localDateKey(date = new Date()) {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Madrid",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(date);
 
-<script>
-const SUPABASE_URL =
-  "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
+      const values = {};
+      for (const part of parts) {
+        values[part.type] = part.value;
+      }
 
-const SUPABASE_KEY =
-  "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
-
-const RESTAURANT = "Veta Steak House";
-const DAILY_TABLE = "veta_daily_review_totals";
-
-let tapsChart = null;
-let isLoading = false;
-let dailyRecord = null;
-
-
-// ==============================
-// UTILIDADES
-// ==============================
-
-function dateKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function formatNumber(value) {
-  return Number(value).toLocaleString("es-ES");
-}
-
-function apiHeaders(extra = {}) {
-  return {
-    "apikey": SUPABASE_KEY,
-    "Authorization": `Bearer ${SUPABASE_KEY}`,
-    ...extra
-  };
-}
-
-async function fetchSupabase(path, options = {}) {
-  const response = await fetch(
-    `${SUPABASE_URL}/rest/v1/${path}`,
-    {
-      ...options,
-      headers: apiHeaders(options.headers || {})
-    }
-  );
-
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(
-      `Supabase (${response.status}): ${detail}`
-    );
-  }
-
-  if (response.status === 204) return null;
-
-  const text = await response.text();
-  return text ? JSON.parse(text) : null;
-}
-
-function setText(id, value) {
-  document.getElementById(id).textContent = value;
-}
-
-
-// ==============================
-// CARGAR APERTURA Y CIERRE
-// ==============================
-
-async function loadDailyReviewTotals() {
-  const today = dateKey(new Date());
-
-  const path =
-    `${DAILY_TABLE}?select=*&restaurant=eq.` +
-    encodeURIComponent(RESTAURANT) +
-    `&day=eq.${today}&limit=1`;
-
-  const records = await fetchSupabase(path);
-
-  dailyRecord = Array.isArray(records) && records.length
-    ? records[0]
-    : null;
-
-  const opening = dailyRecord?.opening_count ?? null;
-  const closing = dailyRecord?.closing_count ?? null;
-
-  setText(
-    "reviewCurrent",
-    opening === null ? "—" : formatNumber(opening)
-  );
-
-  setText(
-    "reviewBaseline",
-    closing === null ? "—" : formatNumber(closing)
-  );
-
-  // Rellenar los campos sin borrar lo que el usuario está editando.
-  const openingInput = document.getElementById("openingInput");
-  const closingInput = document.getElementById("closingInput");
-
-  if (document.activeElement !== openingInput) {
-    openingInput.value = opening ?? "";
-  }
-
-  if (document.activeElement !== closingInput) {
-    closingInput.value = closing ?? "";
-  }
-
-  if (opening !== null && closing !== null) {
-    setText("reviewsToday", formatNumber(closing - opening));
-  } else {
-    setText("reviewsToday", "—");
-  }
-
-  setText(
-    "openingStatus",
-    opening !== null ? "Apertura guardada para hoy." : "Ingresá el total de apertura."
-  );
-
-  setText(
-    "closingStatus",
-    closing !== null ? "Cierre guardado para hoy." : "Ingresá el total de cierre."
-  );
-}
-
-
-// ==============================
-// GUARDAR APERTURA O CIERRE
-// ==============================
-
-async function saveDailyValue(field) {
-  const isOpening = field === "opening_count";
-  const input = document.getElementById(
-    isOpening ? "openingInput" : "closingInput"
-  );
-  const button = document.getElementById(
-    isOpening ? "saveOpeningButton" : "saveClosingButton"
-  );
-  const status = document.getElementById(
-    isOpening ? "openingStatus" : "closingStatus"
-  );
-
-  const rawValue = input.value.trim();
-  const value = Number(rawValue);
-
-  if (
-    rawValue === "" ||
-    !Number.isSafeInteger(value) ||
-    value < 0
-  ) {
-    status.textContent = "Ingresá un número entero válido igual o mayor que cero.";
-    return;
-  }
-
-  button.disabled = true;
-  status.textContent = "Guardando en Supabase...";
-
-  try {
-    const today = dateKey(new Date());
-
-    // Leer el registro del día para actualizar solo el campo seleccionado.
-    const query =
-      `${DAILY_TABLE}?select=*&restaurant=eq.` +
-      encodeURIComponent(RESTAURANT) +
-      `&day=eq.${today}&limit=1`;
-
-    const records = await fetchSupabase(query);
-    const existing = Array.isArray(records) && records.length
-      ? records[0]
-      : null;
-
-    if (existing) {
-      const updatePath =
-        `${DAILY_TABLE}?restaurant=eq.` +
-        encodeURIComponent(RESTAURANT) +
-        `&day=eq.${today}`;
-
-      await fetchSupabase(updatePath, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Prefer": "return=minimal"
-        },
-        body: JSON.stringify({
-          [field]: value,
-          updated_at: new Date().toISOString()
-        })
-      });
-    } else {
-      await fetchSupabase(DAILY_TABLE, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Prefer": "return=minimal"
-        },
-        body: JSON.stringify({
-          restaurant: RESTAURANT,
-          day: today,
-          [field]: value,
-          updated_at: new Date().toISOString()
-        })
-      });
+      return `${values.year}-${values.month}-${values.day}`;
     }
 
-    await loadDailyReviewTotals();
+    function dateOffset(dateKey, offset) {
+      const [year, month, day] = dateKey.split("-").map(Number);
+      const date = new Date(Date.UTC(year, month - 1, day + offset));
+      return date.toISOString().slice(0, 10);
+    }
 
-    status.textContent = isOpening
-      ? "Apertura guardada correctamente."
-      : "Cierre guardado correctamente.";
+    function formatDateTime(value) {
+      if (!value) return "—";
 
-    document.getElementById("status").textContent =
-      "Totales de reseñas guardados en Supabase.";
-
-  } catch (error) {
-    console.error(error);
-    status.textContent = "No se pudo guardar: " + error.message;
-  } finally {
-    button.disabled = false;
-  }
-}
-
-
-// ==============================
-// CARGAR ESTADÍSTICAS NFC
-// ==============================
-
-async function loadTapData() {
-  const path =
-    "nfc_events?select=id,created_at,event" +
-    "&restaurant=eq." + encodeURIComponent(RESTAURANT) +
-    "&event=eq.nfc_tap&order=created_at.desc";
-
-  const data = await fetchSupabase(path);
-
-  const now = new Date();
-
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-
-  const sevenDaysAgo = new Date(now);
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-  const thirtyDaysAgo = new Date(now);
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-  const todayCount = data.filter(item =>
-    new Date(item.created_at) >= todayStart
-  ).length;
-
-  const sevenDays = data.filter(item =>
-    new Date(item.created_at) >= sevenDaysAgo
-  ).length;
-
-  const thirtyDays = data.filter(item =>
-    new Date(item.created_at) >= thirtyDaysAgo
-  ).length;
-
-  setText("total", formatNumber(data.length));
-  setText("today", formatNumber(todayCount));
-  setText("sevenDays", formatNumber(sevenDays));
-  setText("thirtyDays", formatNumber(thirtyDays));
-
-  // Tabla con los últimos 20 taps
-  const table = document.getElementById("tapTable");
-  table.innerHTML = "";
-
-  if (!data.length) {
-    table.innerHTML =
-      '<tr><td colspan="2" class="empty-message">' +
-      'Todavía no hay taps registrados.</td></tr>';
-  } else {
-    data.slice(0, 20).forEach(item => {
-      const date = new Date(item.created_at);
-      const row = document.createElement("tr");
-      const dateCell = document.createElement("td");
-      const timeCell = document.createElement("td");
-
-      dateCell.textContent = date.toLocaleDateString("es-ES");
-      timeCell.textContent = date.toLocaleTimeString("es-ES", {
+      return new Intl.DateTimeFormat("es-ES", {
+        timeZone: "Europe/Madrid",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
         hour: "2-digit",
         minute: "2-digit"
+      }).format(new Date(value));
+    }
+
+    function formatNumber(value) {
+      return Number(value).toLocaleString("es-ES");
+    }
+
+    function setText(id, value) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    }
+
+    function restUrl(table, query = "") {
+      return `${SUPABASE_URL}/rest/v1/${table}${query ? "?" + query : ""}`;
+    }
+
+    async function apiFetch(url, options = {}) {
+      const headers = {
+        ...API_HEADERS,
+        ...(options.headers || {})
+      };
+
+      const response = await fetch(url, {
+        ...options,
+        headers
       });
 
-      row.appendChild(dateCell);
-      row.appendChild(timeCell);
-      table.appendChild(row);
-    });
-  }
+      const body = await response.text();
 
-  // Gráfico de los últimos 30 días
-  const labels = [];
-  const values = [];
+      if (!response.ok) {
+        let detail = body;
 
-  for (let i = 29; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    date.setHours(0, 0, 0, 0);
+        try {
+          const parsed = JSON.parse(body);
+          detail = parsed.message || parsed.details || parsed.hint || body;
+        } catch (_) {}
 
-    const nextDay = new Date(date);
-    nextDay.setDate(nextDay.getDate() + 1);
+        throw new Error(`Supabase (${response.status}): ${detail || response.statusText}`);
+      }
 
-    const count = data.filter(item => {
-      const eventDate = new Date(item.created_at);
-      return eventDate >= date && eventDate < nextDay;
-    }).length;
+      if (!body) return null;
 
-    labels.push(
-      date.toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "2-digit"
-      })
-    );
+      try {
+        return JSON.parse(body);
+      } catch (_) {
+        return body;
+      }
+    }
 
-    values.push(count);
-  }
+    // --------------------------------------------------
+    // FECHA Y HORA
+    // --------------------------------------------------
+    function updateDateLabels() {
+      const now = new Date();
 
-  if (tapsChart) tapsChart.destroy();
+      setText(
+        "todayLabel",
+        new Intl.DateTimeFormat("es-ES", {
+          timeZone: "Europe/Madrid",
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }).format(now)
+      );
+    }
 
-  tapsChart = new Chart(
-    document.getElementById("tapsChart"),
-    {
-      type: "line",
-      data: {
-        labels,
-        datasets: [{
-          label: "Taps por día",
-          data: values,
-          tension: 0.3,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            labels: { color: "white" }
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color: "#aaa" },
-            grid: { color: "#292929" }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              color: "#aaa",
-              precision: 0
-            },
-            grid: { color: "#292929" }
+    // --------------------------------------------------
+    // ESTADÍSTICAS NFC
+    // --------------------------------------------------
+    async function loadTapData() {
+      const tableBody = document.getElementById("eventsTableBody");
+      setText("chartStatus", "Cargando datos del gráfico…");
+      setText("eventsStatus", "");
+
+      const query = new URLSearchParams({
+        select: "id,restaurant,event,created_at",
+        restaurant: `eq.${RESTAURANT}`,
+        event: "eq.nfc_tap",
+        order: "created_at.desc",
+        limit: "10000"
+      });
+
+      const events = await apiFetch(restUrl(EVENTS_TABLE, query.toString()));
+
+      if (!Array.isArray(events)) {
+        throw new Error("La respuesta de interacciones no tiene el formato esperado.");
+      }
+
+      const today = localDateKey();
+      const sevenDaysAgo = dateOffset(today, -6);
+      const thirtyDaysAgo = dateOffset(today, -29);
+
+      let todayCount = 0;
+      let weekCount = 0;
+      let monthCount = 0;
+
+      const dailyCounts = {};
+
+      for (let i = 0; i < 30; i++) {
+        dailyCounts[dateOffset(today, -29 + i)] = 0;
+      }
+
+      for (const event of events) {
+        if (!event.created_at) continue;
+
+        const eventDay = localDateKey(new Date(event.created_at));
+
+        if (eventDay === today) todayCount++;
+
+        if (eventDay >= sevenDaysAgo && eventDay <= today) {
+          weekCount++;
+        }
+
+        if (eventDay >= thirtyDaysAgo && eventDay <= today) {
+          monthCount++;
+
+          if (Object.prototype.hasOwnProperty.call(dailyCounts, eventDay)) {
+            dailyCounts[eventDay]++;
           }
         }
       }
+
+      setText("tapsToday", formatNumber(todayCount));
+      setText("tapsWeek", formatNumber(weekCount));
+      setText("tapsMonth", formatNumber(monthCount));
+      setText("tapsTotal", formatNumber(events.length));
+
+      renderChart(dailyCounts);
+
+      const recentEvents = events.slice(0, 20);
+
+      if (recentEvents.length === 0) {
+        tableBody.innerHTML =
+          '<tr><td colspan="3" class="empty">Todavía no hay interacciones registradas.</td></tr>';
+      } else {
+        tableBody.replaceChildren();
+
+        for (const event of recentEvents) {
+          const row = document.createElement("tr");
+
+          const dateCell = document.createElement("td");
+          dateCell.textContent = formatDateTime(event.created_at);
+
+          const eventCell = document.createElement("td");
+          eventCell.textContent = event.event || "nfc_tap";
+
+          const restaurantCell = document.createElement("td");
+          restaurantCell.textContent = event.restaurant || RESTAURANT;
+
+          row.append(dateCell, eventCell, restaurantCell);
+          tableBody.appendChild(row);
+        }
+      }
+
+      setText("eventsStatus", `Se muestran las últimas ${recentEvents.length} interacciones.`);
+      setText("chartStatus", "Datos agrupados por día, según la hora de Madrid.");
     }
-  );
-}
 
-
-// ==============================
-// ACTUALIZAR DASHBOARD
-// ==============================
-
-async function loadData() {
-  if (isLoading) return;
-
-  isLoading = true;
-
-  const button = document.getElementById("updateButton");
-  const status = document.getElementById("status");
-
-  button.disabled = true;
-  button.textContent = "⏳ Actualizando...";
-  status.textContent = "Consultando datos...";
-
-  try {
-    const results = await Promise.allSettled([
-      loadTapData(),
-      loadDailyReviewTotals()
-    ]);
-
-    const failures = results.filter(result =>
-      result.status === "rejected"
-    );
-
-    if (failures.length) {
-      console.error("Errores al actualizar:", failures);
-      status.textContent =
-        "No se pudieron cargar todos los datos. Revisá la consola del navegador.";
-    } else {
-      const hora = new Date().toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
+    function renderChart(dailyCounts) {
+      const labels = Object.keys(dailyCounts).map(day => {
+        const [year, month, date] = day.split("-").map(Number);
+        return `${String(date).padStart(2, "0")}/${String(month).padStart(2, "0")}`;
       });
 
-      status.textContent =
-        `Última actualización: ${hora} · Actualización automática cada 30 segundos`;
+      const values = Object.values(dailyCounts);
+      const context = document.getElementById("tapsChart").getContext("2d");
+
+      if (tapsChart) {
+        tapsChart.destroy();
+      }
+
+      tapsChart = new Chart(context, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "Interacciones NFC",
+            data: values,
+            borderColor: "#b58a5a",
+            backgroundColor: "rgba(181, 138, 90, 0.12)",
+            pointBackgroundColor: "#b58a5a",
+            pointBorderColor: "#b58a5a",
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            intersect: false,
+            mode: "index"
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: "#ddd6ce"
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: "#a6a09a",
+                maxTicksLimit: 10
+              },
+              grid: {
+                color: "rgba(255,255,255,0.05)"
+              }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0,
+                color: "#a6a09a"
+              },
+              grid: {
+                color: "rgba(255,255,255,0.07)"
+              }
+            }
+          }
+        }
+      });
     }
-  } catch (error) {
-    console.error(error);
-    status.textContent = "No se pudieron actualizar los datos.";
-  } finally {
-    button.disabled = false;
-    button.textContent = "🔄 Actualizar datos";
-    isLoading = false;
-  }
-}
 
+    // --------------------------------------------------
+    // RESEÑAS DIARIAS: CARGAR DATOS
+    // --------------------------------------------------
+    async function loadDailyReviewTotals() {
+      const day = localDateKey();
 
-// ==============================
-// INICIO Y ACTUALIZACIÓN AUTOMÁTICA
-// ==============================
+      const query = new URLSearchParams({
+        select: "id,restaurant,day,opening_count,closing_count,updated_at",
+        restaurant: `eq.${RESTAURANT}`,
+        day: `eq.${day}`,
+        limit: "1"
+      });
 
-loadData();
+      const rows = await apiFetch(restUrl(DAILY_TABLE, query.toString()));
 
-setInterval(loadData, 30000);
-</script>
+      currentDailyRow = Array.isArray(rows) && rows.length > 0
+        ? rows[0]
+        : null;
 
+      const opening = currentDailyRow?.opening_count;
+      const closing = currentDailyRow?.closing_count;
+
+      setText(
+        "openingDisplay",
+        opening === null || opening === undefined ? "—" : formatNumber(opening)
+      );
+
+      setText(
+        "closingDisplay",
+        closing === null || closing === undefined ? "—" : formatNumber(closing)
+      );
+
+      const openingInput = document.getElementById("openingInput");
+      const closingInput = document.getElementById("closingInput");
+
+      // Solo rellenar el campo si tiene un valor guardado.
+      // Esto permite introducir un valor nuevo cuando aún no existe.
+      openingInput.value = opening === null || opening === undefined ? "" : opening;
+      closingInput.value = closing === null || closing === undefined ? "" : closing;
+
+      updateGainedCard(opening, closing);
+
+      setText(
+        "openingStatus",
+        opening === null || opening === undefined
+          ? "Todavía no guardaste la apertura de hoy."
+          : "Apertura guardada para hoy."
+      );
+
+      setText(
+        "closingStatus",
+        closing === null || closing === undefined
+          ? "Todavía no guardaste el cierre de hoy."
+          : "Cierre guardado para hoy."
+      );
+    }
+
+    function updateGainedCard(opening, closing) {
+      const display = document.getElementById("reviewsGainedDisplay");
+      const note = document.getElementById("reviewsGainedNote");
+
+      if (
+        opening === null || opening === undefined ||
+        closing === null || closing === undefined
+      ) {
+        display.textContent = "—";
+        display.classList.remove("positive", "negative");
+        note.textContent = "Guardá la apertura y el cierre para calcular la diferencia.";
+        return;
+      }
+
+      const difference = Number(closing) - Number(opening);
+
+      display.textContent = difference > 0
+        ? `+${formatNumber(difference)}`
+        : formatNumber(difference);
+
+      display.classList.remove("positive", "negative");
+
+      if (difference > 0) display.classList.add("positive");
+      if (difference < 0) display.classList.add("negative");
+
+      if (difference > 0) {
+        note.textContent = "Aumento neto de reseñas respecto a la apertura.";
+      } else if (difference < 0) {
+        note.textContent = "El total de cierre es inferior al de apertura. Revisá ambos valores.";
+      } else {
+        note.textContent = "El total de reseñas no cambió entre apertura y cierre.";
+      }
+    }
+
+    // --------------------------------------------------
+    // RESEÑAS DIARIAS: GUARDAR APERTURA O CIERRE
+    // --------------------------------------------------
+    async function saveDailyValue(field) {
+      const isOpening = field === "opening_count";
+      const inputId = isOpening ? "openingInput" : "closingInput";
+      const buttonId = isOpening ? "saveOpeningButton" : "saveClosingButton";
+      const statusId = isOpening ? "openingStatus" : "closingStatus";
+
+      const input = document.getElementById(inputId);
+      const button = document.getElementById(buttonId);
+      const status = document.getElementById(statusId);
+
+      const rawValue = input.value.trim();
+      const value = Number(rawValue);
+
+      if (
+        rawValue === "" ||
+        !Number.isSafeInteger(value) ||
+        value < 0
+      ) {
+        status.textContent = "Ingresá un número entero igual o mayor que cero.";
+        status.classList.add("negative");
+        return;
+      }
+
+      button.disabled = true;
+      status.classList.remove("negative", "positive");
+      status.textContent = "Guardando…";
+
+      try {
+        const day = localDateKey();
+
+        // Leer el registro del día para preservar el otro total.
+        const query = new URLSearchParams({
+          select: "id,restaurant,day,opening_count,closing_count",
+          restaurant: `eq.${RESTAURANT}`,
+          day: `eq.${day}`,
+          limit: "1"
+        });
+
+        const rows = await apiFetch(restUrl(DAILY_TABLE, query.toString()));
+        const existing = Array.isArray(rows) && rows.length ? rows[0] : null;
+
+        if (existing) {
+          const updateQuery = new URLSearchParams({
+            id: `eq.${existing.id}`,
+            restaurant: `eq.${RESTAURANT}`,
+            day: `eq.${day}`
+          });
+
+          await apiFetch(restUrl(DAILY_TABLE, updateQuery.toString()), {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({
+              [field]: value,
+              updated_at: new Date().toISOString()
+            })
+          });
+        } else {
+          await apiFetch(restUrl(DAILY_TABLE), {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Prefer": "return=minimal"
+            },
+            body: JSON.stringify({
+              restaurant: RESTAURANT,
+              day,
+              opening_count: isOpening ? value : null,
+              closing_count: isOpening ? null : value,
+              updated_at: new Date().toISOString()
+            })
+          });
+        }
+
+        await loadDailyReviewTotals();
+
+        status.textContent = isOpening
+          ? "Apertura guardada correctamente."
+          : "Cierre guardado correctamente.";
+
+        status.classList.add("positive");
+      } catch (error) {
+        console.error("Error guardando el total diario:", error);
+
+        status.textContent = "No se pudo guardar: " + error.message;
+        status.classList.add("negative");
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    // --------------------------------------------------
+    // ACTUALIZACIÓN DEL DASHBOARD
+    // --------------------------------------------------
+    async function refreshDashboard() {
+      if (refreshInProgress) return;
+
+      refreshInProgress = true;
+      const refreshButton = document.getElementById("refreshButton");
+      refreshButton.disabled = true;
+      setText("generalStatus", "Actualizando datos…");
+
+      const results = await Promise.allSettled([
+        loadTapData(),
+        loadDailyReviewTotals()
+      ]);
+
+      const errors = results
+        .filter(result => result.status === "rejected")
+        .map(result => result.reason?.message || "Error desconocido");
+
+      if (errors.length) {
+        setText("generalStatus", "No se pudieron cargar todos los datos: " + errors.join(" | "));
+      } else {
+        setText("generalStatus", "Datos actualizados correctamente.");
+      }
+
+      setText(
+        "lastUpdated",
+        "Última actualización: " +
+        new Intl.DateTimeFormat("es-ES", {
+          timeZone: "Europe/Madrid",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        }).format(new Date())
+      );
+
+      refreshButton.disabled = false;
+      refreshInProgress = false;
+    }
+
+    document.getElementById("saveOpeningButton").addEventListener("click", () => {
+      saveDailyValue("opening_count");
+    });
+
+    document.getElementById("saveClosingButton").addEventListener("click", () => {
+      saveDailyValue("closing_count");
+    });
+
+    document.getElementById("refreshButton").addEventListener("click", refreshDashboard);
+
+    updateDateLabels();
+    refreshDashboard();
+
+    // Actualizar datos periódicamente.
+    setInterval(refreshDashboard, 30000);
+
+    // Si se deja abierta la página al cambiar el día, actualizar la fecha.
+    setInterval(updateDateLabels, 60000);
+  </script>
 </body>
 </html>

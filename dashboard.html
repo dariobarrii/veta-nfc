@@ -1,59 +1,348 @@
-async function loadReviewCounts() {
-  const { data, error } = await supabase
-    .from("google_review_counts")
-    .select("*")
-    .eq("restaurant", RESTAURANT)
-    .order("captured_at", { ascending: false });
 
-  if (error) {
-    console.error("Error cargando reseñas:", error);
-    return;
-  }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VETA | Panel NFC</title>
 
-  const records = data || [];
-  const today = dateKey(new Date());
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  const todayRecords = records.filter(record =>
-    dateKey(new Date(record.captured_at)) === today
-  );
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --panel: #151515;
+      --border: #30271f;
+      --gold: #b58a5a;
+      --text: #f5f1eb;
+      --muted: #a69b8e;
+    }
 
-  // Último total registrado hoy
-  const latestToday = todayRecords[0] || null;
+    * {
+      box-sizing: border-box;
+    }
 
-  // Primer total registrado hoy
-  const firstToday = todayRecords.length
-    ? todayRecords[todayRecords.length - 1]
-    : null;
+    body {
+      margin: 0;
+      padding: 28px 18px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-  // Sin registros de hoy, no se utiliza ningún total anterior
-  const reviewCurrent = latestToday
-    ? latestToday.review_count
-    : "—";
+    .container {
+      width: 100%;
+      max-width: 1050px;
+      margin: 0 auto;
+    }
 
-  const reviewBaseline = firstToday
-    ? firstToday.review_count
-    : "—";
+    header {
+      margin-bottom: 30px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border);
+    }
 
-  const reviewsToday =
-    firstToday && latestToday
-      ? latestToday.review_count - firstToday.review_count
-      : "—";
+    .brand {
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: 5px;
+      margin-bottom: 12px;
+    }
 
-  // Actualizar los valores del dashboard
-  document.getElementById("reviewCurrent").textContent =
-    reviewCurrent;
+    h1 {
+      font-size: clamp(27px, 5vw, 40px);
+      margin: 0 0 10px;
+      letter-spacing: 1px;
+    }
 
-  document.getElementById("reviewBaseline").textContent =
-    reviewBaseline;
+    .subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
 
-  document.getElementById("reviewsToday").textContent =
-    reviewsToday;
+    .section-title {
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin: 30px 0 15px;
+      text-transform: uppercase;
+    }
 
-  const statusElement = document.getElementById("reviewStatus");
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 15px;
+    }
 
-  if (statusElement) {
-    statusElement.textContent = todayRecords.length
-      ? "Referencia del día"
-      : "Sin registros de reseñas hoy";
-  }
-}
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 23px;
+      min-height: 145px;
+    }
+
+    .card-label {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .card-value {
+      color: var(--gold);
+      font-size: clamp(30px, 5vw, 38px);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .card-note {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 28px;
+    }
+
+    button {
+      background: var(--gold);
+      color: #111;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #lastUpdated {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    #errorMessage {
+      color: #e6a19b;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 18px;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      color: #81776d;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 35px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header>
+      <div class="brand">VETA</div>
+      <h1>Panel de control NFC</h1>
+      <div class="subtitle">
+        VETA Steak House · Seguimiento de interacciones y reseñas de Google
+      </div>
+    </header>
+
+    <div class="section-title">Interacciones NFC</div>
+
+    <section class="grid">
+      <article class="card">
+        <div class="card-label">Interacciones de hoy</div>
+        <div class="card-value" id="eventsToday">—</div>
+        <div class="card-note">Eventos registrados durante el día de hoy.</div>
+      </article>
+
+      <article class="card">
+        <div class="card-label">Interacciones totales</div>
+        <div class="card-value" id="eventsTotal">—</div>
+        <div class="card-note">Total de eventos guardados para VETA.</div>
+      </article>
+    </section>
+
+    <div class="section-title">Reseñas de Google</div>
+
+    <section class="grid">
+      <article class="card">
+        <div class="card-label">Total actual de reseñas</div>
+        <div class="card-value" id="reviewCurrent">—</div>
+        <div class="card-note">Último total registrado hoy.</div>
+      </article>
+
+      <article class="card">
+        <div class="card-label">Referencia del día</div>
+        <div class="card-value" id="reviewBaseline">—</div>
+        <div class="card-note">Primer total registrado hoy.</div>
+      </article>
+
+      <article class="card">
+        <div class="card-label">Reseñas ganadas hoy</div>
+        <div class="card-value" id="reviewsToday">—</div>
+        <div class="card-note">Diferencia entre el primer y el último registro de hoy.</div>
+      </article>
+    </section>
+
+    <div class="toolbar">
+      <button id="refreshButton" type="button" onclick="loadDashboard()">
+        Actualizar datos
+      </button>
+      <span id="lastUpdated">Esperando datos…</span>
+    </div>
+
+    <div id="errorMessage"></div>
+
+    <footer>
+      Los datos se actualizan desde la base de datos. El contador de reseñas
+      refleja los totales que hayan sido registrados; no detecta reseñas nuevas
+      automáticamente si no se guarda un nuevo total.
+    </footer>
+  </main>
+
+  <script>
+    const SUPABASE_URL =
+      "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
+
+    const RESTAURANT = "Veta Steak House";
+
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    // Fecha local del navegador en formato YYYY-MM-DD
+    function dateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+    async function loadReviewCounts() {
+      const { data, error } = await supabase
+        .from("google_review_counts")
+        .select("*")
+        .eq("restaurant", RESTAURANT)
+        .order("captured_at", { ascending: false });
+
+      if (error) {
+        throw new Error("Error cargando reseñas: " + error.message);
+      }
+
+      const records = data || [];
+      const today = dateKey(new Date());
+
+      const todayRecords = records.filter(record =>
+        dateKey(new Date(record.captured_at)) === today
+      );
+
+      // Último total registrado hoy
+      const latestToday = todayRecords[0] || null;
+
+      // Primer total registrado hoy
+      const firstToday = todayRecords.length
+        ? todayRecords[todayRecords.length - 1]
+        : null;
+
+      // No usar registros de días anteriores como referencia
+      const reviewCurrent = latestToday
+        ? latestToday.review_count
+        : "—";
+
+      const reviewBaseline = firstToday
+        ? firstToday.review_count
+        : "—";
+
+      const reviewsToday =
+        firstToday && latestToday
+          ? latestToday.review_count - firstToday.review_count
+          : "—";
+
+      document.getElementById("reviewCurrent").textContent =
+        reviewCurrent;
+
+      document.getElementById("reviewBaseline").textContent =
+        reviewBaseline;
+
+      document.getElementById("reviewsToday").textContent =
+        reviewsToday;
+    }
+
+    async function loadEvents() {
+      const { data, error } = await supabase
+        .from("nfc_events")
+        .select("id, created_at")
+        .eq("restaurant", RESTAURANT)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        throw new Error("Error cargando eventos NFC: " + error.message);
+      }
+
+      const events = data || [];
+      const today = dateKey(new Date());
+
+      const eventsToday = events.filter(event =>
+        dateKey(new Date(event.created_at)) === today
+      ).length;
+
+      document.getElementById("eventsToday").textContent =
+        eventsToday.toLocaleString("es-ES");
+
+      document.getElementById("eventsTotal").textContent =
+        events.length.toLocaleString("es-ES");
+    }
+
+    async function loadDashboard() {
+      const button = document.getElementById("refreshButton");
+      const errorMessage = document.getElementById("errorMessage");
+      const lastUpdated = document.getElementById("lastUpdated");
+
+      button.disabled = true;
+      errorMessage.textContent = "";
+      lastUpdated.textContent = "Actualizando…";
+
+      try {
+        await Promise.all([
+          loadReviewCounts(),
+          loadEvents()
+        ]);
+
+        lastUpdated.textContent =
+          "Última actualización: " +
+          new Date().toLocaleString("es-ES");
+      } catch (error) {
+        console.error(error);
+        errorMessage.textContent =
+          "No se pudieron cargar todos los datos. " + error.message;
+        lastUpdated.textContent = "Actualización incompleta";
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

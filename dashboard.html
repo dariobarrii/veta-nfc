@@ -5,14 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VETA Steak House | Dashboard NFC</title>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
       --bg: #101010;
       --panel: #1b1b1b;
-      --panel2: #151515;
       --brown: #b58a5a;
       --brown-border: #493725;
       --text: #f5f1eb;
@@ -21,9 +19,7 @@
       --red: #e59b91;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -197,13 +193,8 @@
       margin-top: 12px;
     }
 
-    .positive {
-      color: var(--green);
-    }
-
-    .negative {
-      color: var(--red);
-    }
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
 
     .panel {
       background: var(--panel);
@@ -261,9 +252,7 @@
       border-bottom: 1px solid #2b2926;
     }
 
-    tbody tr:last-child td {
-      border-bottom: 0;
-    }
+    tbody tr:last-child td { border-bottom: 0; }
 
     .empty {
       color: var(--muted);
@@ -279,725 +268,564 @@
     }
 
     @media (max-width: 850px) {
-      .cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .review-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .review-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 560px) {
-      .container {
-        padding: 22px 13px 35px;
-      }
-
-      .brand {
-        font-size: 24px;
-      }
-
-      .cards,
-      .review-cards {
-        grid-template-columns: 1fr;
-      }
-
-      .card,
-      .review-cards .card,
-      .panel {
-        padding: 18px;
-      }
-
-      .review-cards h3 {
-        min-height: 0;
-      }
-
-      .date-label {
-        text-align: left;
-      }
-
-      .chart-wrap {
-        height: 260px;
-      }
+      .container { padding: 22px 13px 35px; }
+      .brand { font-size: 24px; }
+      .cards, .review-cards { grid-template-columns: 1fr; }
+      .card, .review-cards .card, .panel { padding: 18px; }
+      .review-cards h3 { min-height: 0; }
+      .date-label { text-align: left; }
+      .chart-wrap { height: 260px; }
     }
   </style>
 </head>
 
 <body>
-  <main class="container">
-    <header>
-      <div>
-        <h1 class="brand">VETA</h1>
-        <div class="subtitle">Steak House · Panel de seguimiento NFC</div>
-      </div>
-      <div>
-        <div class="date-label" id="todayLabel">Cargando fecha…</div>
-        <div class="date-label" id="lastUpdated" style="margin-top:7px">
-          Cargando datos…
-        </div>
-      </div>
-    </header>
-
-    <!-- ESTADÍSTICAS NFC -->
-    <h2 class="section-title">Interacciones NFC</h2>
-
-    <section class="cards">
-      <article class="card">
-        <h3>Interacciones de hoy</h3>
-        <div class="number" id="tapsToday">—</div>
-        <div class="card-note">Lecturas registradas hoy</div>
-      </article>
-
-      <article class="card">
-        <h3>Interacciones últimos 7 días</h3>
-        <div class="number" id="tapsWeek">—</div>
-        <div class="card-note">Actividad de la última semana</div>
-      </article>
-
-      <article class="card">
-        <h3>Interacciones últimos 30 días</h3>
-        <div class="number" id="tapsMonth">—</div>
-        <div class="card-note">Actividad del último mes</div>
-      </article>
-
-      <article class="card">
-        <h3>Total de interacciones</h3>
-        <div class="number" id="tapsTotal">—</div>
-        <div class="card-note">Total de registros NFC</div>
-      </article>
-    </section>
-
-    <!-- RESEÑAS: APERTURA, CIERRE Y DIFERENCIA -->
-    <h2 class="section-title">Seguimiento diario de reseñas de Google</h2>
-
-    <section class="cards review-cards">
-      <article class="card">
-        <h3>Reseñas al comenzar el día</h3>
-        <div class="number" id="openingDisplay">—</div>
-
-        <label for="openingInput">Total de reseñas al abrir</label>
-        <input
-          type="number"
-          id="openingInput"
-          min="0"
-          step="1"
-          inputmode="numeric"
-          placeholder="Ej.: 657"
-        >
-
-        <button type="button" id="saveOpeningButton">
-          Guardar apertura
-        </button>
-
-        <div class="review-status" id="openingStatus" aria-live="polite"></div>
-      </article>
-
-      <article class="card">
-        <h3>Reseñas al terminar el día</h3>
-        <div class="number" id="closingDisplay">—</div>
-
-        <label for="closingInput">Total de reseñas al cerrar</label>
-        <input
-          type="number"
-          id="closingInput"
-          min="0"
-          step="1"
-          inputmode="numeric"
-          placeholder="Ej.: 660"
-        >
-
-        <button type="button" id="saveClosingButton">
-          Guardar cierre
-        </button>
-
-        <div class="review-status" id="closingStatus" aria-live="polite"></div>
-      </article>
-
-      <article class="card">
-        <h3>Reseñas ganadas hoy</h3>
-        <div class="number" id="reviewsGainedDisplay">—</div>
-        <p class="review-note" id="reviewsGainedNote">
-          Guardá la apertura y el cierre para calcular la diferencia.
-        </p>
-      </article>
-    </section>
-
-    <!-- GRÁFICO -->
-    <section class="panel">
-      <div class="panel-header">
-        <h2>Interacciones NFC · Últimos 30 días</h2>
-        <button type="button" class="refresh-button" id="refreshButton">
-          Actualizar datos
-        </button>
-      </div>
-
-      <div class="chart-wrap">
-        <canvas id="tapsChart"></canvas>
-      </div>
-      <div class="page-status" id="chartStatus"></div>
-    </section>
-
-    <!-- HISTORIAL -->
-    <section class="panel">
-      <div class="panel-header">
-        <h2>Últimas interacciones NFC</h2>
-      </div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha y hora</th>
-              <th>Evento</th>
-              <th>Restaurante</th>
-            </tr>
-          </thead>
-          <tbody id="eventsTableBody">
-            <tr>
-              <td colspan="3" class="empty">Cargando interacciones…</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="page-status" id="eventsStatus"></div>
-    </section>
-
-    <div class="page-status" id="generalStatus">
-      Conectando con Supabase…
+<main class="container">
+  <header>
+    <div>
+      <h1 class="brand">VETA</h1>
+      <div class="subtitle">Steak House · Panel de seguimiento NFC</div>
     </div>
-  </main>
+    <div>
+      <div class="date-label" id="todayLabel">Cargando fecha…</div>
+      <div class="date-label" id="lastUpdated" style="margin-top:7px">Cargando datos…</div>
+    </div>
+  </header>
 
-  <script>
-    // --------------------------------------------------
-    // CONFIGURACIÓN DE SUPABASE
-    // --------------------------------------------------
-    const SUPABASE_URL = "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
+  <h2 class="section-title">Interacciones NFC</h2>
 
-    const RESTAURANT = "Veta Steak House";
-    const EVENTS_TABLE = "nfc_events";
-    const DAILY_TABLE = "veta_daily_review_totals";
+  <section class="cards">
+    <article class="card">
+      <h3>Interacciones de hoy</h3>
+      <div class="number" id="tapsToday">—</div>
+      <div class="card-note">Lecturas registradas hoy</div>
+    </article>
+    <article class="card">
+      <h3>Interacciones últimos 7 días</h3>
+      <div class="number" id="tapsWeek">—</div>
+      <div class="card-note">Actividad de la última semana</div>
+    </article>
+    <article class="card">
+      <h3>Interacciones últimos 30 días</h3>
+      <div class="number" id="tapsMonth">—</div>
+      <div class="card-note">Actividad del último mes</div>
+    </article>
+    <article class="card">
+      <h3>Total de interacciones</h3>
+      <div class="number" id="tapsTotal">—</div>
+      <div class="card-note">Total de registros NFC</div>
+    </article>
+  </section>
 
-    const API_HEADERS = {
-      "apikey": SUPABASE_KEY,
-      "Authorization": "Bearer " + SUPABASE_KEY
-    };
+  <h2 class="section-title">Seguimiento diario de reseñas de Google</h2>
 
-    let tapsChart = null;
-    let currentDailyRow = null;
-    let refreshInProgress = false;
+  <section class="cards review-cards">
+    <article class="card">
+      <h3>Reseñas al comenzar el día</h3>
+      <div class="number" id="openingDisplay">—</div>
+      <label for="openingInput">Total de reseñas al abrir</label>
+      <input type="number" id="openingInput" min="0" step="1"
+             inputmode="numeric" placeholder="Ej.: 657">
+      <button type="button" id="saveOpeningButton">Guardar apertura</button>
+      <div class="review-status" id="openingStatus" aria-live="polite"></div>
+    </article>
 
-    // --------------------------------------------------
-    // UTILIDADES
-    // --------------------------------------------------
-    function localDateKey(date = new Date()) {
-      const parts = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Europe/Madrid",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      }).formatToParts(date);
+    <article class="card">
+      <h3>Reseñas al terminar el día</h3>
+      <div class="number" id="closingDisplay">—</div>
+      <label for="closingInput">Total de reseñas al cerrar</label>
+      <input type="number" id="closingInput" min="0" step="1"
+             inputmode="numeric" placeholder="Ej.: 660">
+      <button type="button" id="saveClosingButton">Guardar cierre</button>
+      <div class="review-status" id="closingStatus" aria-live="polite"></div>
+    </article>
 
-      const values = {};
-      for (const part of parts) {
-        values[part.type] = part.value;
-      }
+    <article class="card">
+      <h3>Reseñas ganadas hoy</h3>
+      <div class="number" id="reviewsGainedDisplay">—</div>
+      <p class="review-note" id="reviewsGainedNote">
+        Guardá la apertura y el cierre para calcular la diferencia.
+      </p>
+    </article>
+  </section>
 
-      return `${values.year}-${values.month}-${values.day}`;
-    }
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Interacciones NFC · Últimos 30 días</h2>
+      <button type="button" class="refresh-button" id="refreshButton">
+        Actualizar datos
+      </button>
+    </div>
+    <div class="chart-wrap"><canvas id="tapsChart"></canvas></div>
+    <div class="page-status" id="chartStatus"></div>
+  </section>
 
-    function dateOffset(dateKey, offset) {
-      const [year, month, day] = dateKey.split("-").map(Number);
-      const date = new Date(Date.UTC(year, month - 1, day + offset));
-      return date.toISOString().slice(0, 10);
-    }
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Últimas interacciones NFC</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha y hora</th>
+            <th>Evento</th>
+            <th>Restaurante</th>
+          </tr>
+        </thead>
+        <tbody id="eventsTableBody">
+          <tr><td colspan="3" class="empty">Cargando interacciones…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="page-status" id="eventsStatus"></div>
+  </section>
 
-    function formatDateTime(value) {
-      if (!value) return "—";
+  <div class="page-status" id="generalStatus">Conectando con Supabase…</div>
+</main>
 
-      return new Intl.DateTimeFormat("es-ES", {
-        timeZone: "Europe/Madrid",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-      }).format(new Date(value));
-    }
+<script>
+  // CONFIGURACIÓN
+  const SUPABASE_URL = "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
 
-    function formatNumber(value) {
-      return Number(value).toLocaleString("es-ES");
-    }
+  const RESTAURANT = "Veta Steak House";
+  const EVENTS_TABLE = "nfc_events";
+  const DAILY_TABLE = "veta_daily_review_totals";
 
-    function setText(id, value) {
-      const element = document.getElementById(id);
-      if (element) element.textContent = value;
-    }
+  const API_HEADERS = {
+    apikey: SUPABASE_KEY,
+    Authorization: "Bearer " + SUPABASE_KEY
+  };
 
-    function restUrl(table, query = "") {
-      return `${SUPABASE_URL}/rest/v1/${table}${query ? "?" + query : ""}`;
-    }
+  let tapsChart = null;
+  let refreshInProgress = false;
 
-    async function apiFetch(url, options = {}) {
-      const headers = {
+  function localDateKey(date = new Date()) {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Europe/Madrid",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).formatToParts(date);
+
+    const values = {};
+    for (const part of parts) values[part.type] = part.value;
+    return `${values.year}-${values.month}-${values.day}`;
+  }
+
+  function dateOffset(dateKey, offset) {
+    const [year, month, day] = dateKey.split("-").map(Number);
+    return new Date(Date.UTC(year, month - 1, day + offset))
+      .toISOString().slice(0, 10);
+  }
+
+  function formatDateTime(value) {
+    if (!value) return "—";
+    return new Intl.DateTimeFormat("es-ES", {
+      timeZone: "Europe/Madrid",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(new Date(value));
+  }
+
+  function formatNumber(value) {
+    return Number(value).toLocaleString("es-ES");
+  }
+
+  function setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  }
+
+  function restUrl(table, query = "") {
+    return `${SUPABASE_URL}/rest/v1/${table}${query ? "?" + query : ""}`;
+  }
+
+  async function apiFetch(url, options = {}) {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
         ...API_HEADERS,
         ...(options.headers || {})
-      };
-
-      const response = await fetch(url, {
-        ...options,
-        headers
-      });
-
-      const body = await response.text();
-
-      if (!response.ok) {
-        let detail = body;
-
-        try {
-          const parsed = JSON.parse(body);
-          detail = parsed.message || parsed.details || parsed.hint || body;
-        } catch (_) {}
-
-        throw new Error(`Supabase (${response.status}): ${detail || response.statusText}`);
       }
+    });
 
-      if (!body) return null;
+    const body = await response.text();
 
+    if (!response.ok) {
+      let detail = body;
       try {
-        return JSON.parse(body);
-      } catch (_) {
-        return body;
+        const parsed = JSON.parse(body);
+        detail = parsed.message || parsed.details || parsed.hint || body;
+      } catch (_) {}
+      throw new Error(`Supabase (${response.status}): ${detail || response.statusText}`);
+    }
+
+    if (!body) return null;
+
+    try { return JSON.parse(body); }
+    catch (_) { return body; }
+  }
+
+  function updateDateLabels() {
+    setText("todayLabel", new Intl.DateTimeFormat("es-ES", {
+      timeZone: "Europe/Madrid",
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).format(new Date()));
+  }
+
+  // ESTADÍSTICAS E HISTORIAL NFC
+  async function loadTapData() {
+    setText("chartStatus", "Cargando datos del gráfico…");
+    setText("eventsStatus", "");
+
+    const query = new URLSearchParams({
+      select: "id,restaurant,event,created_at",
+      restaurant: `eq.${RESTAURANT}`,
+      event: "eq.nfc_tap",
+      order: "created_at.desc",
+      limit: "10000"
+    });
+
+    const events = await apiFetch(restUrl(EVENTS_TABLE, query.toString()));
+
+    if (!Array.isArray(events)) {
+      throw new Error("La respuesta de interacciones no tiene el formato esperado.");
+    }
+
+    const today = localDateKey();
+    const sevenDaysAgo = dateOffset(today, -6);
+    const thirtyDaysAgo = dateOffset(today, -29);
+
+    let todayCount = 0;
+    let weekCount = 0;
+    let monthCount = 0;
+    const dailyCounts = {};
+
+    for (let i = 0; i < 30; i++) {
+      dailyCounts[dateOffset(today, -29 + i)] = 0;
+    }
+
+    for (const event of events) {
+      if (!event.created_at) continue;
+      const eventDay = localDateKey(new Date(event.created_at));
+
+      if (eventDay === today) todayCount++;
+      if (eventDay >= sevenDaysAgo && eventDay <= today) weekCount++;
+
+      if (eventDay >= thirtyDaysAgo && eventDay <= today) {
+        monthCount++;
+        if (Object.prototype.hasOwnProperty.call(dailyCounts, eventDay)) {
+          dailyCounts[eventDay]++;
+        }
       }
     }
 
-    // --------------------------------------------------
-    // FECHA Y HORA
-    // --------------------------------------------------
-    function updateDateLabels() {
-      const now = new Date();
+    setText("tapsToday", formatNumber(todayCount));
+    setText("tapsWeek", formatNumber(weekCount));
+    setText("tapsMonth", formatNumber(monthCount));
+    setText("tapsTotal", formatNumber(events.length));
 
-      setText(
-        "todayLabel",
-        new Intl.DateTimeFormat("es-ES", {
-          timeZone: "Europe/Madrid",
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        }).format(now)
-      );
-    }
+    renderChart(dailyCounts);
 
-    // --------------------------------------------------
-    // ESTADÍSTICAS NFC
-    // --------------------------------------------------
-    async function loadTapData() {
-      const tableBody = document.getElementById("eventsTableBody");
-      setText("chartStatus", "Cargando datos del gráfico…");
-      setText("eventsStatus", "");
+    const recentEvents = events.slice(0, 20);
+    const tableBody = document.getElementById("eventsTableBody");
+    tableBody.replaceChildren();
 
-      const query = new URLSearchParams({
-        select: "id,restaurant,event,created_at",
-        restaurant: `eq.${RESTAURANT}`,
-        event: "eq.nfc_tap",
-        order: "created_at.desc",
-        limit: "10000"
+    if (recentEvents.length === 0) {
+      tableBody.innerHTML =
+        '<tr><td colspan="3" class="empty">Todavía no hay interacciones registradas.</td></tr>';
+    } else {
+      recentEvents.forEach((event, index) => {
+        const row = document.createElement("tr");
+
+        const dateCell = document.createElement("td");
+        dateCell.textContent = formatDateTime(event.created_at);
+
+        const eventCell = document.createElement("td");
+
+        // CORRECCIÓN: mostrar un número de interacción en lugar de "nfc_tap".
+        // La numeración comienza en 1 para la interacción más reciente.
+        eventCell.textContent = `N.º ${index + 1}`;
+
+        const restaurantCell = document.createElement("td");
+        restaurantCell.textContent = event.restaurant || RESTAURANT;
+
+        row.append(dateCell, eventCell, restaurantCell);
+        tableBody.appendChild(row);
       });
-
-      const events = await apiFetch(restUrl(EVENTS_TABLE, query.toString()));
-
-      if (!Array.isArray(events)) {
-        throw new Error("La respuesta de interacciones no tiene el formato esperado.");
-      }
-
-      const today = localDateKey();
-      const sevenDaysAgo = dateOffset(today, -6);
-      const thirtyDaysAgo = dateOffset(today, -29);
-
-      let todayCount = 0;
-      let weekCount = 0;
-      let monthCount = 0;
-
-      const dailyCounts = {};
-
-      for (let i = 0; i < 30; i++) {
-        dailyCounts[dateOffset(today, -29 + i)] = 0;
-      }
-
-      for (const event of events) {
-        if (!event.created_at) continue;
-
-        const eventDay = localDateKey(new Date(event.created_at));
-
-        if (eventDay === today) todayCount++;
-
-        if (eventDay >= sevenDaysAgo && eventDay <= today) {
-          weekCount++;
-        }
-
-        if (eventDay >= thirtyDaysAgo && eventDay <= today) {
-          monthCount++;
-
-          if (Object.prototype.hasOwnProperty.call(dailyCounts, eventDay)) {
-            dailyCounts[eventDay]++;
-          }
-        }
-      }
-
-      setText("tapsToday", formatNumber(todayCount));
-      setText("tapsWeek", formatNumber(weekCount));
-      setText("tapsMonth", formatNumber(monthCount));
-      setText("tapsTotal", formatNumber(events.length));
-
-      renderChart(dailyCounts);
-
-      const recentEvents = events.slice(0, 20);
-
-      if (recentEvents.length === 0) {
-        tableBody.innerHTML =
-          '<tr><td colspan="3" class="empty">Todavía no hay interacciones registradas.</td></tr>';
-      } else {
-        tableBody.replaceChildren();
-
-        for (const event of recentEvents) {
-          const row = document.createElement("tr");
-
-          const dateCell = document.createElement("td");
-          dateCell.textContent = formatDateTime(event.created_at);
-
-          const eventCell = document.createElement("td");
-          eventCell.textContent = event.event || "nfc_tap";
-
-          const restaurantCell = document.createElement("td");
-          restaurantCell.textContent = event.restaurant || RESTAURANT;
-
-          row.append(dateCell, eventCell, restaurantCell);
-          tableBody.appendChild(row);
-        }
-      }
-
-      setText("eventsStatus", `Se muestran las últimas ${recentEvents.length} interacciones.`);
-      setText("chartStatus", "Datos agrupados por día, según la hora de Madrid.");
     }
 
-    function renderChart(dailyCounts) {
-      const labels = Object.keys(dailyCounts).map(day => {
-        const [year, month, date] = day.split("-").map(Number);
-        return `${String(date).padStart(2, "0")}/${String(month).padStart(2, "0")}`;
-      });
+    setText("eventsStatus", `Se muestran las últimas ${recentEvents.length} interacciones.`);
+    setText("chartStatus", "Datos agrupados por día, según la hora de Madrid.");
+  }
 
-      const values = Object.values(dailyCounts);
-      const context = document.getElementById("tapsChart").getContext("2d");
+  function renderChart(dailyCounts) {
+    const labels = Object.keys(dailyCounts).map(day => {
+      const [year, month, date] = day.split("-").map(Number);
+      return `${String(date).padStart(2, "0")}/${String(month).padStart(2, "0")}`;
+    });
 
-      if (tapsChart) {
-        tapsChart.destroy();
-      }
+    const context = document.getElementById("tapsChart").getContext("2d");
 
-      tapsChart = new Chart(context, {
-        type: "line",
-        data: {
-          labels,
-          datasets: [{
-            label: "Interacciones NFC",
-            data: values,
-            borderColor: "#b58a5a",
-            backgroundColor: "rgba(181, 138, 90, 0.12)",
-            pointBackgroundColor: "#b58a5a",
-            pointBorderColor: "#b58a5a",
-            pointRadius: 3,
-            pointHoverRadius: 5,
-            borderWidth: 2,
-            fill: true,
-            tension: 0.3
-          }]
+    if (tapsChart) tapsChart.destroy();
+
+    tapsChart = new Chart(context, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Interacciones NFC",
+          data: Object.values(dailyCounts),
+          borderColor: "#b58a5a",
+          backgroundColor: "rgba(181, 138, 90, 0.12)",
+          pointBackgroundColor: "#b58a5a",
+          pointBorderColor: "#b58a5a",
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          borderWidth: 2,
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { intersect: false, mode: "index" },
+        plugins: {
+          legend: { labels: { color: "#ddd6ce" } }
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: {
-            intersect: false,
-            mode: "index"
+        scales: {
+          x: {
+            ticks: { color: "#a6a09a", maxTicksLimit: 10 },
+            grid: { color: "rgba(255,255,255,0.05)" }
           },
-          plugins: {
-            legend: {
-              labels: {
-                color: "#ddd6ce"
-              }
-            }
-          },
-          scales: {
-            x: {
-              ticks: {
-                color: "#a6a09a",
-                maxTicksLimit: 10
-              },
-              grid: {
-                color: "rgba(255,255,255,0.05)"
-              }
-            },
-            y: {
-              beginAtZero: true,
-              ticks: {
-                precision: 0,
-                color: "#a6a09a"
-              },
-              grid: {
-                color: "rgba(255,255,255,0.07)"
-              }
-            }
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0, color: "#a6a09a" },
+            grid: { color: "rgba(255,255,255,0.07)" }
           }
         }
-      });
+      }
+    });
+  }
+
+  // RESEÑAS DIARIAS
+  async function loadDailyReviewTotals() {
+    const day = localDateKey();
+
+    const query = new URLSearchParams({
+      select: "id,restaurant,day,opening_count,closing_count,updated_at",
+      restaurant: `eq.${RESTAURANT}`,
+      day: `eq.${day}`,
+      limit: "1"
+    });
+
+    const rows = await apiFetch(restUrl(DAILY_TABLE, query.toString()));
+    const dailyRow = Array.isArray(rows) && rows.length ? rows[0] : null;
+
+    const opening = dailyRow?.opening_count;
+    const closing = dailyRow?.closing_count;
+
+    setText("openingDisplay",
+      opening === null || opening === undefined ? "—" : formatNumber(opening));
+
+    setText("closingDisplay",
+      closing === null || closing === undefined ? "—" : formatNumber(closing));
+
+    document.getElementById("openingInput").value =
+      opening === null || opening === undefined ? "" : opening;
+
+    document.getElementById("closingInput").value =
+      closing === null || closing === undefined ? "" : closing;
+
+    updateGainedCard(opening, closing);
+
+    setText("openingStatus",
+      opening === null || opening === undefined
+        ? "Todavía no guardaste la apertura de hoy."
+        : "Apertura guardada para hoy.");
+
+    setText("closingStatus",
+      closing === null || closing === undefined
+        ? "Todavía no guardaste el cierre de hoy."
+        : "Cierre guardado para hoy.");
+  }
+
+  function updateGainedCard(opening, closing) {
+    const display = document.getElementById("reviewsGainedDisplay");
+    const note = document.getElementById("reviewsGainedNote");
+
+    if (
+      opening === null || opening === undefined ||
+      closing === null || closing === undefined
+    ) {
+      display.textContent = "—";
+      display.classList.remove("positive", "negative");
+      note.textContent = "Guardá la apertura y el cierre para calcular la diferencia.";
+      return;
     }
 
-    // --------------------------------------------------
-    // RESEÑAS DIARIAS: CARGAR DATOS
-    // --------------------------------------------------
-    async function loadDailyReviewTotals() {
-      const day = localDateKey();
+    const difference = Number(closing) - Number(opening);
 
+    display.textContent = difference > 0
+      ? `+${formatNumber(difference)}`
+      : formatNumber(difference);
+
+    display.classList.remove("positive", "negative");
+
+    if (difference > 0) display.classList.add("positive");
+    if (difference < 0) display.classList.add("negative");
+
+    if (difference > 0) {
+      note.textContent = "Aumento neto de reseñas respecto a la apertura.";
+    } else if (difference < 0) {
+      note.textContent = "El total de cierre es inferior al de apertura. Revisá ambos valores.";
+    } else {
+      note.textContent = "El total de reseñas no cambió entre apertura y cierre.";
+    }
+  }
+
+  async function saveDailyValue(field) {
+    const isOpening = field === "opening_count";
+    const input = document.getElementById(isOpening ? "openingInput" : "closingInput");
+    const button = document.getElementById(isOpening ? "saveOpeningButton" : "saveClosingButton");
+    const status = document.getElementById(isOpening ? "openingStatus" : "closingStatus");
+
+    const rawValue = input.value.trim();
+    const value = Number(rawValue);
+
+    if (rawValue === "" || !Number.isSafeInteger(value) || value < 0) {
+      status.textContent = "Ingresá un número entero igual o mayor que cero.";
+      status.classList.add("negative");
+      return;
+    }
+
+    button.disabled = true;
+    status.classList.remove("negative", "positive");
+    status.textContent = "Guardando…";
+
+    try {
+      const day = localDateKey();
       const query = new URLSearchParams({
-        select: "id,restaurant,day,opening_count,closing_count,updated_at",
+        select: "id,restaurant,day,opening_count,closing_count",
         restaurant: `eq.${RESTAURANT}`,
         day: `eq.${day}`,
         limit: "1"
       });
 
       const rows = await apiFetch(restUrl(DAILY_TABLE, query.toString()));
+      const existing = Array.isArray(rows) && rows.length ? rows[0] : null;
 
-      currentDailyRow = Array.isArray(rows) && rows.length > 0
-        ? rows[0]
-        : null;
-
-      const opening = currentDailyRow?.opening_count;
-      const closing = currentDailyRow?.closing_count;
-
-      setText(
-        "openingDisplay",
-        opening === null || opening === undefined ? "—" : formatNumber(opening)
-      );
-
-      setText(
-        "closingDisplay",
-        closing === null || closing === undefined ? "—" : formatNumber(closing)
-      );
-
-      const openingInput = document.getElementById("openingInput");
-      const closingInput = document.getElementById("closingInput");
-
-      // Solo rellenar el campo si tiene un valor guardado.
-      // Esto permite introducir un valor nuevo cuando aún no existe.
-      openingInput.value = opening === null || opening === undefined ? "" : opening;
-      closingInput.value = closing === null || closing === undefined ? "" : closing;
-
-      updateGainedCard(opening, closing);
-
-      setText(
-        "openingStatus",
-        opening === null || opening === undefined
-          ? "Todavía no guardaste la apertura de hoy."
-          : "Apertura guardada para hoy."
-      );
-
-      setText(
-        "closingStatus",
-        closing === null || closing === undefined
-          ? "Todavía no guardaste el cierre de hoy."
-          : "Cierre guardado para hoy."
-      );
-    }
-
-    function updateGainedCard(opening, closing) {
-      const display = document.getElementById("reviewsGainedDisplay");
-      const note = document.getElementById("reviewsGainedNote");
-
-      if (
-        opening === null || opening === undefined ||
-        closing === null || closing === undefined
-      ) {
-        display.textContent = "—";
-        display.classList.remove("positive", "negative");
-        note.textContent = "Guardá la apertura y el cierre para calcular la diferencia.";
-        return;
-      }
-
-      const difference = Number(closing) - Number(opening);
-
-      display.textContent = difference > 0
-        ? `+${formatNumber(difference)}`
-        : formatNumber(difference);
-
-      display.classList.remove("positive", "negative");
-
-      if (difference > 0) display.classList.add("positive");
-      if (difference < 0) display.classList.add("negative");
-
-      if (difference > 0) {
-        note.textContent = "Aumento neto de reseñas respecto a la apertura.";
-      } else if (difference < 0) {
-        note.textContent = "El total de cierre es inferior al de apertura. Revisá ambos valores.";
-      } else {
-        note.textContent = "El total de reseñas no cambió entre apertura y cierre.";
-      }
-    }
-
-    // --------------------------------------------------
-    // RESEÑAS DIARIAS: GUARDAR APERTURA O CIERRE
-    // --------------------------------------------------
-    async function saveDailyValue(field) {
-      const isOpening = field === "opening_count";
-      const inputId = isOpening ? "openingInput" : "closingInput";
-      const buttonId = isOpening ? "saveOpeningButton" : "saveClosingButton";
-      const statusId = isOpening ? "openingStatus" : "closingStatus";
-
-      const input = document.getElementById(inputId);
-      const button = document.getElementById(buttonId);
-      const status = document.getElementById(statusId);
-
-      const rawValue = input.value.trim();
-      const value = Number(rawValue);
-
-      if (
-        rawValue === "" ||
-        !Number.isSafeInteger(value) ||
-        value < 0
-      ) {
-        status.textContent = "Ingresá un número entero igual o mayor que cero.";
-        status.classList.add("negative");
-        return;
-      }
-
-      button.disabled = true;
-      status.classList.remove("negative", "positive");
-      status.textContent = "Guardando…";
-
-      try {
-        const day = localDateKey();
-
-        // Leer el registro del día para preservar el otro total.
-        const query = new URLSearchParams({
-          select: "id,restaurant,day,opening_count,closing_count",
+      if (existing) {
+        const updateQuery = new URLSearchParams({
+          id: `eq.${existing.id}`,
           restaurant: `eq.${RESTAURANT}`,
-          day: `eq.${day}`,
-          limit: "1"
+          day: `eq.${day}`
         });
 
-        const rows = await apiFetch(restUrl(DAILY_TABLE, query.toString()));
-        const existing = Array.isArray(rows) && rows.length ? rows[0] : null;
-
-        if (existing) {
-          const updateQuery = new URLSearchParams({
-            id: `eq.${existing.id}`,
-            restaurant: `eq.${RESTAURANT}`,
-            day: `eq.${day}`
-          });
-
-          await apiFetch(restUrl(DAILY_TABLE, updateQuery.toString()), {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              "Prefer": "return=minimal"
-            },
-            body: JSON.stringify({
-              [field]: value,
-              updated_at: new Date().toISOString()
-            })
-          });
-        } else {
-          await apiFetch(restUrl(DAILY_TABLE), {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Prefer": "return=minimal"
-            },
-            body: JSON.stringify({
-              restaurant: RESTAURANT,
-              day,
-              opening_count: isOpening ? value : null,
-              closing_count: isOpening ? null : value,
-              updated_at: new Date().toISOString()
-            })
-          });
-        }
-
-        await loadDailyReviewTotals();
-
-        status.textContent = isOpening
-          ? "Apertura guardada correctamente."
-          : "Cierre guardado correctamente.";
-
-        status.classList.add("positive");
-      } catch (error) {
-        console.error("Error guardando el total diario:", error);
-
-        status.textContent = "No se pudo guardar: " + error.message;
-        status.classList.add("negative");
-      } finally {
-        button.disabled = false;
-      }
-    }
-
-    // --------------------------------------------------
-    // ACTUALIZACIÓN DEL DASHBOARD
-    // --------------------------------------------------
-    async function refreshDashboard() {
-      if (refreshInProgress) return;
-
-      refreshInProgress = true;
-      const refreshButton = document.getElementById("refreshButton");
-      refreshButton.disabled = true;
-      setText("generalStatus", "Actualizando datos…");
-
-      const results = await Promise.allSettled([
-        loadTapData(),
-        loadDailyReviewTotals()
-      ]);
-
-      const errors = results
-        .filter(result => result.status === "rejected")
-        .map(result => result.reason?.message || "Error desconocido");
-
-      if (errors.length) {
-        setText("generalStatus", "No se pudieron cargar todos los datos: " + errors.join(" | "));
+        await apiFetch(restUrl(DAILY_TABLE, updateQuery.toString()), {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify({
+            [field]: value,
+            updated_at: new Date().toISOString()
+          })
+        });
       } else {
-        setText("generalStatus", "Datos actualizados correctamente.");
+        await apiFetch(restUrl(DAILY_TABLE), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify({
+            restaurant: RESTAURANT,
+            day,
+            opening_count: isOpening ? value : null,
+            closing_count: isOpening ? null : value,
+            updated_at: new Date().toISOString()
+          })
+        });
       }
 
-      setText(
-        "lastUpdated",
-        "Última actualización: " +
-        new Intl.DateTimeFormat("es-ES", {
-          timeZone: "Europe/Madrid",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }).format(new Date())
-      );
-
-      refreshButton.disabled = false;
-      refreshInProgress = false;
+      await loadDailyReviewTotals();
+      status.textContent = isOpening
+        ? "Apertura guardada correctamente."
+        : "Cierre guardado correctamente.";
+      status.classList.add("positive");
+    } catch (error) {
+      console.error("Error guardando el total diario:", error);
+      status.textContent = "No se pudo guardar: " + error.message;
+      status.classList.add("negative");
+    } finally {
+      button.disabled = false;
     }
+  }
 
-    document.getElementById("saveOpeningButton").addEventListener("click", () => {
-      saveDailyValue("opening_count");
-    });
+  // ACTUALIZAR TODO
+  async function refreshDashboard() {
+    if (refreshInProgress) return;
+    refreshInProgress = true;
 
-    document.getElementById("saveClosingButton").addEventListener("click", () => {
-      saveDailyValue("closing_count");
-    });
+    const refreshButton = document.getElementById("refreshButton");
+    refreshButton.disabled = true;
+    setText("generalStatus", "Actualizando datos…");
 
-    document.getElementById("refreshButton").addEventListener("click", refreshDashboard);
+    const results = await Promise.allSettled([
+      loadTapData(),
+      loadDailyReviewTotals()
+    ]);
 
-    updateDateLabels();
-    refreshDashboard();
+    const errors = results
+      .filter(result => result.status === "rejected")
+      .map(result => result.reason?.message || "Error desconocido");
 
-    // Actualizar datos periódicamente.
-    setInterval(refreshDashboard, 30000);
+    setText("generalStatus", errors.length
+      ? "No se pudieron cargar todos los datos: " + errors.join(" | ")
+      : "Datos actualizados correctamente.");
 
-    // Si se deja abierta la página al cambiar el día, actualizar la fecha.
-    setInterval(updateDateLabels, 60000);
-  </script>
+    setText("lastUpdated", "Última actualización: " +
+      new Intl.DateTimeFormat("es-ES", {
+        timeZone: "Europe/Madrid",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      }).format(new Date()));
+
+    refreshButton.disabled = false;
+    refreshInProgress = false;
+  }
+
+  document.getElementById("saveOpeningButton").addEventListener("click", () => {
+    saveDailyValue("opening_count");
+  });
+
+  document.getElementById("saveClosingButton").addEventListener("click", () => {
+    saveDailyValue("closing_count");
+  });
+
+  document.getElementById("refreshButton").addEventListener("click", refreshDashboard);
+
+  updateDateLabels();
+  refreshDashboard();
+  setInterval(refreshDashboard, 30000);
+  setInterval(updateDateLabels, 60000);
+</script>
 </body>
 </html>

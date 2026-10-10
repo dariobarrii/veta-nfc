@@ -1,16 +1,15 @@
-```html
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VETA Steak House | Dashboard NFC</title>
   <meta name="theme-color" content="#0b0908">
+  <title>VETA | Dashboard QR + NFC</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -24,19 +23,15 @@
       --muted: #a99b8c;
       --green: #91c7a0;
       --red: #e69a8e;
-      --radius: 18px;
+      --qr: #91c7a0;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(ellipse at top right, #291b10 0, transparent 38%),
-        var(--bg);
+      background: radial-gradient(ellipse at top right, #291b10 0, transparent 38%), var(--bg);
       color: var(--text);
       font-family: "DM Sans", Arial, sans-serif;
     }
@@ -55,28 +50,26 @@
       flex-wrap: wrap;
       padding-bottom: 24px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .brand {
       color: var(--gold-light);
       font-family: "Playfair Display", Georgia, serif;
       font-size: clamp(28px, 4vw, 36px);
-      font-weight: 600;
       letter-spacing: 2px;
       margin: 0;
     }
 
-    .subtitle {
+    .subtitle, .note, .status {
       color: var(--muted);
-      margin-top: 7px;
-      font-size: 13px;
+      font-size: 12px;
+      line-height: 1.6;
     }
 
     .date-label {
       color: var(--muted);
       font-size: 12px;
-      text-align: right;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 30px;
@@ -85,10 +78,8 @@
     }
 
     .section-title {
-      color: var(--text);
       font-family: "Playfair Display", Georgia, serif;
       font-size: 23px;
-      font-weight: 600;
       margin: 30px 0 16px;
     }
 
@@ -98,20 +89,24 @@
       gap: 15px;
     }
 
-    .card {
+    .review-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card, .panel {
       min-width: 0;
       background: linear-gradient(145deg, #19130f, #100d0b);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 18px;
       padding: 22px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+      box-shadow: 0 8px 24px #0002;
     }
 
     .card h3 {
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.5;
       font-weight: 500;
+      line-height: 1.5;
       margin: 0 0 15px;
     }
 
@@ -119,129 +114,21 @@
       color: var(--gold-light);
       font-size: clamp(27px, 3vw, 35px);
       font-weight: 600;
-      line-height: 1.15;
+      line-height: 1.2;
       overflow-wrap: anywhere;
     }
+
+    .qr-number { color: var(--qr); }
 
     .card-note {
       color: #847568;
       font-size: 11px;
-      margin-top: 10px;
       line-height: 1.5;
-    }
-
-    .review-cards {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .review-cards .card {
-      background: linear-gradient(145deg, #19130f, #100d0b);
-      border-color: var(--border);
-      padding: 23px;
-    }
-
-    .review-cards h3 {
-      color: var(--gold-light);
-      font-family: "Playfair Display", Georgia, serif;
-      font-size: 17px;
-      font-weight: 600;
-      min-height: 0;
-      margin: 0 0 15px;
-    }
-
-    .review-cards label {
-      display: block;
-      margin: 18px 0 8px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .review-cards input {
-      display: block;
-      width: 100%;
-      min-width: 0;
-      padding: 13px;
-      border: 1px solid #493423;
-      border-radius: 10px;
-      background: #0d0a08;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 15px;
-      outline: none;
-    }
-
-    .review-cards input:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 2px #b58a5a22;
-    }
-
-    .review-cards button,
-    .refresh-button {
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 12px 15px;
-      cursor: pointer;
-      transition: .18s ease;
-    }
-
-    .review-cards button {
-      width: 100%;
-      margin-top: 12px;
-      color: #17100a;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      border: 1px solid var(--gold);
-    }
-
-    .review-cards button:hover:not(:disabled),
-    .refresh-button:hover:not(:disabled) {
-      filter: brightness(1.1);
-      transform: translateY(-1px);
-    }
-
-    .refresh-button {
-      color: var(--gold-light);
-      background: #21170f;
-      border: 1px solid #63452a;
-    }
-
-    button:disabled {
-      opacity: .55;
-      cursor: wait;
-    }
-
-    .review-status {
-      min-height: 17px;
       margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
-    .review-note {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
-      margin-top: 12px;
-    }
-
-    .positive {
-      color: var(--green);
-    }
-
-    .negative {
-      color: var(--red);
     }
 
     .panel {
-      background: linear-gradient(145deg, #19130f, #100d0b);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px;
       margin-top: 18px;
-      min-width: 0;
       overflow: hidden;
     }
 
@@ -255,7 +142,6 @@
     }
 
     .panel h2 {
-      color: var(--text);
       font-family: "Playfair Display", Georgia, serif;
       font-size: 19px;
       font-weight: 600;
@@ -268,15 +154,12 @@
       height: 300px;
     }
 
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-    }
+    .table-wrap { width: 100%; overflow-x: auto; }
 
     table {
       border-collapse: collapse;
       width: 100%;
-      min-width: 440px;
+      min-width: 480px;
       font-size: 12px;
     }
 
@@ -284,7 +167,6 @@
       background: #110d0a;
       color: var(--muted);
       text-align: left;
-      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: .06em;
       font-size: 10px;
@@ -298,220 +180,219 @@
       border-bottom: 1px solid #2b2018;
     }
 
-    tbody tr:hover {
-      background: #21170f77;
-    }
-
-    tbody tr:last-child td {
-      border-bottom: 0;
-    }
+    tbody tr:hover { background: #21170f77; }
+    tbody tr:last-child td { border-bottom: 0; }
 
     .empty {
       color: var(--muted);
       padding: 25px 15px;
-      font-size: 12px;
       text-align: center;
     }
 
-    .page-status {
+    label {
+      display: block;
+      margin: 18px 0 8px;
       color: var(--muted);
-      font-size: 11px;
-      margin-top: 16px;
-      line-height: 1.6;
-      overflow-wrap: anywhere;
+      font-size: 12px;
     }
 
-    @media (max-width: 850px) {
-      .cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    input {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid #493423;
+      border-radius: 10px;
+      background: #0d0a08;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
 
-      .review-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    input:focus { border-color: var(--gold); }
+
+    button {
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 12px 15px;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+
+    button:disabled { opacity: .55; cursor: wait; }
+
+    .save-button {
+      width: 100%;
+      margin-top: 12px;
+      color: #17100a;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      border: 1px solid var(--gold);
+    }
+
+    .refresh-button {
+      color: var(--gold-light);
+      background: #21170f;
+      border: 1px solid #63452a;
+    }
+
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
+    .status { margin-top: 10px; overflow-wrap: anywhere; }
+    .note { margin-top: 12px; }
+
+    @media (max-width: 850px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .review-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 560px) {
-      .container {
-        padding: 22px 13px 35px;
-      }
-
-      .brand {
-        font-size: 28px;
-      }
-
-      .cards,
-      .review-cards {
-        grid-template-columns: 1fr;
-      }
-
-      .card,
-      .review-cards .card,
-      .panel {
-        padding: 18px;
-      }
-
-      .date-label {
-        text-align: left;
-      }
-
-      .chart-wrap {
-        height: 260px;
-      }
-
-      .panel-header {
-        align-items: flex-start;
-      }
+      .container { padding: 22px 13px 35px; }
+      .cards, .review-cards { grid-template-columns: 1fr; }
+      .card, .panel { padding: 18px; }
+      .chart-wrap { height: 260px; }
     }
   </style>
 </head>
 
 <body>
 <main class="container">
-
   <header>
     <div>
       <h1 class="brand">VETA</h1>
-      <div class="subtitle">Steak House · Panel de seguimiento NFC</div>
+      <div class="subtitle">Steak House · Panel de seguimiento QR + NFC</div>
     </div>
-
     <div>
       <div class="date-label" id="todayLabel">Cargando fecha…</div>
-      <div class="date-label" id="lastUpdated" style="margin-top:7px">
-        Cargando datos…
-      </div>
+      <div class="date-label" id="lastUpdated">Cargando datos…</div>
     </div>
   </header>
 
-  <h2 class="section-title">Interacciones NFC</h2>
+  <h2 class="section-title">Seguimiento NFC</h2>
+  <section class="cards">
+    <article class="card">
+      <h3>NFC · Hoy</h3>
+      <div class="number" id="nfcToday">—</div>
+      <div class="card-note">Lecturas registradas hoy</div>
+    </article>
+    <article class="card">
+      <h3>NFC · Últimos 7 días</h3>
+      <div class="number" id="nfcWeek">—</div>
+      <div class="card-note">Actividad semanal</div>
+    </article>
+    <article class="card">
+      <h3>NFC · Últimos 30 días</h3>
+      <div class="number" id="nfcMonth">—</div>
+      <div class="card-note">Actividad mensual</div>
+    </article>
+    <article class="card">
+      <h3>NFC · Total histórico</h3>
+      <div class="number" id="nfcTotal">—</div>
+      <div class="card-note">Total de lecturas NFC</div>
+    </article>
+  </section>
 
+  <h2 class="section-title">Seguimiento QR</h2>
+  <section class="cards">
+    <article class="card">
+      <h3>QR · Hoy</h3>
+      <div class="number qr-number" id="qrToday">—</div>
+      <div class="card-note">Escaneos registrados hoy</div>
+    </article>
+    <article class="card">
+      <h3>QR · Últimos 7 días</h3>
+      <div class="number qr-number" id="qrWeek">—</div>
+      <div class="card-note">Actividad semanal</div>
+    </article>
+    <article class="card">
+      <h3>QR · Últimos 30 días</h3>
+      <div class="number qr-number" id="qrMonth">—</div>
+      <div class="card-note">Actividad mensual</div>
+    </article>
+    <article class="card">
+      <h3>QR · Total histórico</h3>
+      <div class="number qr-number" id="qrTotal">—</div>
+      <div class="card-note">Total de escaneos QR</div>
+    </article>
+  </section>
+
+  <h2 class="section-title">Total combinado</h2>
   <section class="cards">
     <article class="card">
       <h3>Interacciones de hoy</h3>
-      <div class="number" id="tapsToday">—</div>
-      <div class="card-note">Lecturas registradas hoy</div>
+      <div class="number" id="allToday">—</div>
+      <div class="card-note">QR + NFC</div>
     </article>
-
     <article class="card">
       <h3>Interacciones últimos 7 días</h3>
-      <div class="number" id="tapsWeek">—</div>
-      <div class="card-note">Actividad de la última semana</div>
+      <div class="number" id="allWeek">—</div>
+      <div class="card-note">QR + NFC</div>
     </article>
-
     <article class="card">
       <h3>Interacciones últimos 30 días</h3>
-      <div class="number" id="tapsMonth">—</div>
-      <div class="card-note">Actividad del último mes</div>
+      <div class="number" id="allMonth">—</div>
+      <div class="card-note">QR + NFC</div>
     </article>
-
     <article class="card">
-      <h3>Total de interacciones</h3>
-      <div class="number" id="tapsTotal">—</div>
-      <div class="card-note">Total de registros NFC</div>
+      <h3>Total histórico combinado</h3>
+      <div class="number" id="allTotal">—</div>
+      <div class="card-note">QR + NFC</div>
     </article>
   </section>
 
   <h2 class="section-title">Seguimiento diario de reseñas de Google</h2>
-
   <section class="cards review-cards">
     <article class="card">
       <h3>Reseñas al comenzar el día</h3>
       <div class="number" id="openingDisplay">—</div>
-
       <label for="openingInput">Total de reseñas al abrir</label>
-      <input
-        type="number"
-        id="openingInput"
-        min="0"
-        step="1"
-        inputmode="numeric"
-        placeholder="Ej.: 657"
-      >
-
-      <button type="button" id="saveOpeningButton">
-        Guardar apertura
-      </button>
-
-      <div class="review-status" id="openingStatus" aria-live="polite"></div>
+      <input type="number" id="openingInput" min="0" step="1" placeholder="Ej.: 657">
+      <button class="save-button" id="saveOpeningButton">Guardar apertura</button>
+      <div class="status" id="openingStatus" aria-live="polite"></div>
     </article>
 
     <article class="card">
       <h3>Reseñas al terminar el día</h3>
       <div class="number" id="closingDisplay">—</div>
-
       <label for="closingInput">Total de reseñas al cerrar</label>
-      <input
-        type="number"
-        id="closingInput"
-        min="0"
-        step="1"
-        inputmode="numeric"
-        placeholder="Ej.: 660"
-      >
-
-      <button type="button" id="saveClosingButton">
-        Guardar cierre
-      </button>
-
-      <div class="review-status" id="closingStatus" aria-live="polite"></div>
+      <input type="number" id="closingInput" min="0" step="1" placeholder="Ej.: 660">
+      <button class="save-button" id="saveClosingButton">Guardar cierre</button>
+      <div class="status" id="closingStatus" aria-live="polite"></div>
     </article>
 
     <article class="card">
-      <h3>Reseñas ganadas hoy</h3>
+      <h3>Diferencia de reseñas hoy</h3>
       <div class="number" id="reviewsGainedDisplay">—</div>
-
-      <p class="review-note" id="reviewsGainedNote">
-        Guardá la apertura y el cierre para calcular la diferencia.
-      </p>
+      <p class="note" id="reviewsGainedNote">Guardá la apertura y el cierre para calcular la diferencia.</p>
     </article>
   </section>
 
   <section class="panel">
     <div class="panel-header">
-      <h2>Interacciones NFC · Últimos 30 días</h2>
-
-      <button type="button" class="refresh-button" id="refreshButton">
-        Actualizar datos
-      </button>
+      <h2>Actividad diaria · Últimos 30 días</h2>
+      <button class="refresh-button" id="refreshButton">Actualizar datos</button>
     </div>
-
-    <div class="chart-wrap">
-      <canvas id="tapsChart"></canvas>
-    </div>
-
-    <div class="page-status" id="chartStatus"></div>
+    <div class="chart-wrap"><canvas id="tapsChart"></canvas></div>
+    <div class="status" id="chartStatus"></div>
   </section>
 
   <section class="panel">
-    <div class="panel-header">
-      <h2>Últimas interacciones NFC</h2>
-    </div>
-
+    <div class="panel-header"><h2>Últimas interacciones QR y NFC</h2></div>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr>
-            <th>Fecha y hora</th>
-            <th>Evento</th>
-            <th>Restaurante</th>
-          </tr>
+          <tr><th>Fecha y hora</th><th>Canal</th><th>Restaurante</th></tr>
         </thead>
-
         <tbody id="eventsTableBody">
-          <tr>
-            <td colspan="3" class="empty">Cargando interacciones…</td>
-          </tr>
+          <tr><td colspan="3" class="empty">Cargando interacciones…</td></tr>
         </tbody>
       </table>
     </div>
-
-    <div class="page-status" id="eventsStatus"></div>
+    <div class="status" id="eventsStatus"></div>
   </section>
 
-  <div class="page-status" id="generalStatus">
-    Conectando con Supabase…
-  </div>
-
+  <div class="status" id="generalStatus">Conectando con Supabase…</div>
 </main>
 
 <script>
@@ -540,21 +421,16 @@
 
     const values = {};
     for (const part of parts) values[part.type] = part.value;
-
     return `${values.year}-${values.month}-${values.day}`;
   }
 
   function dateOffset(dateKey, offset) {
     const [year, month, day] = dateKey.split("-").map(Number);
-
     return new Date(Date.UTC(year, month - 1, day + offset))
-      .toISOString()
-      .slice(0, 10);
+      .toISOString().slice(0, 10);
   }
 
   function formatDateTime(value) {
-    if (!value) return "—";
-
     return new Intl.DateTimeFormat("es-ES", {
       timeZone: "Europe/Madrid",
       day: "2-digit",
@@ -571,10 +447,7 @@
 
   function setText(id, value) {
     const element = document.getElementById(id);
-
-    if (element) {
-      element.textContent = value;
-    }
+    if (element) element.textContent = value;
   }
 
   function restUrl(table, query = "") {
@@ -594,213 +467,177 @@
 
     if (!response.ok) {
       let detail = body;
-
       try {
         const parsed = JSON.parse(body);
         detail = parsed.message || parsed.details || parsed.hint || body;
       } catch (_) {}
-
-      throw new Error(
-        `Supabase (${response.status}): ${detail || response.statusText}`
-      );
+      throw new Error(`Supabase (${response.status}): ${detail || response.statusText}`);
     }
 
     if (!body) return null;
-
-    try {
-      return JSON.parse(body);
-    } catch (_) {
-      return body;
-    }
+    try { return JSON.parse(body); } catch (_) { return body; }
   }
 
   function updateDateLabels() {
-    setText(
-      "todayLabel",
-      new Intl.DateTimeFormat("es-ES", {
-        timeZone: "Europe/Madrid",
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      }).format(new Date())
-    );
+    setText("todayLabel", new Intl.DateTimeFormat("es-ES", {
+      timeZone: "Europe/Madrid",
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).format(new Date()));
   }
 
-  async function loadTapData() {
+  async function loadEventData() {
     setText("chartStatus", "Cargando datos del gráfico…");
     setText("eventsStatus", "");
 
     const query = new URLSearchParams({
       select: "id,restaurant,event,created_at",
       restaurant: `eq.${RESTAURANT}`,
-      event: "eq.nfc_tap",
+      event: "in.(nfc_tap,qr_scan)",
       order: "created_at.desc",
       limit: "10000"
     });
 
-    const events = await apiFetch(
-      restUrl(EVENTS_TABLE, query.toString())
-    );
+    const events = await apiFetch(restUrl(EVENTS_TABLE, query.toString()));
 
     if (!Array.isArray(events)) {
-      throw new Error(
-        "La respuesta de interacciones no tiene el formato esperado."
-      );
+      throw new Error("La respuesta de eventos no tiene el formato esperado.");
     }
 
+    const nfcEvents = events.filter(e => e.event === "nfc_tap");
+    const qrEvents = events.filter(e => e.event === "qr_scan");
+
     const today = localDateKey();
-    const sevenDaysAgo = dateOffset(today, -6);
-    const thirtyDaysAgo = dateOffset(today, -29);
+    const weekStart = dateOffset(today, -6);
+    const monthStart = dateOffset(today, -29);
 
-    let todayCount = 0;
-    let weekCount = 0;
-    let monthCount = 0;
+    const counts = {
+      nfc: { today: 0, week: 0, month: 0 },
+      qr: { today: 0, week: 0, month: 0 }
+    };
 
-    const dailyCounts = {};
-
+    const daily = {};
     for (let i = 0; i < 30; i++) {
-      dailyCounts[dateOffset(today, -29 + i)] = 0;
+      daily[dateOffset(today, -29 + i)] = { nfc: 0, qr: 0 };
     }
 
     for (const event of events) {
       if (!event.created_at) continue;
 
-      const eventDay = localDateKey(new Date(event.created_at));
+      const day = localDateKey(new Date(event.created_at));
+      const channel = event.event === "nfc_tap" ? "nfc" :
+                      event.event === "qr_scan" ? "qr" : null;
+      if (!channel) continue;
 
-      if (eventDay === today) todayCount++;
+      if (day === today) counts[channel].today++;
+      if (day >= weekStart && day <= today) counts[channel].week++;
 
-      if (eventDay >= sevenDaysAgo && eventDay <= today) {
-        weekCount++;
-      }
-
-      if (eventDay >= thirtyDaysAgo && eventDay <= today) {
-        monthCount++;
-
-        if (
-          Object.prototype.hasOwnProperty.call(dailyCounts, eventDay)
-        ) {
-          dailyCounts[eventDay]++;
-        }
+      if (day >= monthStart && day <= today) {
+        counts[channel].month++;
+        if (daily[day]) daily[day][channel]++;
       }
     }
 
-    setText("tapsToday", formatNumber(todayCount));
-    setText("tapsWeek", formatNumber(weekCount));
-    setText("tapsMonth", formatNumber(monthCount));
-    setText("tapsTotal", formatNumber(events.length));
+    for (const channel of ["nfc", "qr"]) {
+      setText(`${channel}Today`, formatNumber(counts[channel].today));
+      setText(`${channel}Week`, formatNumber(counts[channel].week));
+      setText(`${channel}Month`, formatNumber(counts[channel].month));
+      setText(`${channel}Total`, formatNumber(
+        channel === "nfc" ? nfcEvents.length : qrEvents.length
+      ));
+    }
 
-    renderChart(dailyCounts);
+    setText("allToday", formatNumber(counts.nfc.today + counts.qr.today));
+    setText("allWeek", formatNumber(counts.nfc.week + counts.qr.week));
+    setText("allMonth", formatNumber(counts.nfc.month + counts.qr.month));
+    setText("allTotal", formatNumber(nfcEvents.length + qrEvents.length));
 
-    const recentEvents = events.slice(0, 20);
+    renderChart(daily);
+
+    const recent = events.slice(0, 20);
     const tableBody = document.getElementById("eventsTableBody");
-
     tableBody.replaceChildren();
 
-    if (recentEvents.length === 0) {
+    if (!recent.length) {
       tableBody.innerHTML =
         '<tr><td colspan="3" class="empty">Todavía no hay interacciones registradas.</td></tr>';
     } else {
-      recentEvents.forEach((event, index) => {
+      for (const event of recent) {
         const row = document.createElement("tr");
 
         const dateCell = document.createElement("td");
         dateCell.textContent = formatDateTime(event.created_at);
 
-        const eventCell = document.createElement("td");
-
-        // La interacción más antigua de las 20 mostradas lleva el N.º 1.
-        eventCell.textContent = `N.º ${recentEvents.length - index}`;
+        const channelCell = document.createElement("td");
+        channelCell.textContent = event.event === "qr_scan" ? "QR" : "NFC";
+        channelCell.style.color = event.event === "qr_scan" ? "#91c7a0" : "#d9b783";
 
         const restaurantCell = document.createElement("td");
         restaurantCell.textContent = event.restaurant || RESTAURANT;
 
-        row.append(dateCell, eventCell, restaurantCell);
+        row.append(dateCell, channelCell, restaurantCell);
         tableBody.appendChild(row);
-      });
+      }
     }
 
-    setText(
-      "eventsStatus",
-      `Se muestran las últimas ${recentEvents.length} interacciones.`
-    );
-
-    setText(
-      "chartStatus",
-      "Datos agrupados por día, según la hora de Madrid."
-    );
+    setText("eventsStatus", `Se muestran las últimas ${recent.length} interacciones.`);
+    setText("chartStatus", "Datos agrupados por día, según la hora de Madrid.");
   }
 
-  function renderChart(dailyCounts) {
-    const labels = Object.keys(dailyCounts).map(day => {
+  function renderChart(daily) {
+    const days = Object.keys(daily);
+    const labels = days.map(day => {
       const [, month, date] = day.split("-").map(Number);
-
       return `${String(date).padStart(2, "0")}/${String(month).padStart(2, "0")}`;
     });
 
-    const context = document.getElementById("tapsChart").getContext("2d");
+    if (tapsChart) tapsChart.destroy();
 
-    if (tapsChart) {
-      tapsChart.destroy();
-    }
-
-    tapsChart = new Chart(context, {
+    tapsChart = new Chart(document.getElementById("tapsChart").getContext("2d"), {
       type: "line",
-
       data: {
         labels,
-
-        datasets: [{
-          label: "Interacciones NFC",
-          data: Object.values(dailyCounts),
-          borderColor: "#d9b783",
-          backgroundColor: "rgba(181, 138, 90, 0.14)",
-          pointBackgroundColor: "#d9b783",
-          pointBorderColor: "#d9b783",
-          pointRadius: 3,
-          pointHoverRadius: 5,
-          borderWidth: 2,
-          fill: true,
-          tension: 0.3
-        }]
+        datasets: [
+          {
+            label: "NFC",
+            data: days.map(day => daily[day].nfc),
+            borderColor: "#d9b783",
+            backgroundColor: "rgba(181,138,90,0.12)",
+            pointBackgroundColor: "#d9b783",
+            borderWidth: 2,
+            pointRadius: 3,
+            tension: 0.3
+          },
+          {
+            label: "QR",
+            data: days.map(day => daily[day].qr),
+            borderColor: "#91c7a0",
+            backgroundColor: "rgba(145,199,160,0.08)",
+            pointBackgroundColor: "#91c7a0",
+            borderWidth: 2,
+            pointRadius: 3,
+            tension: 0.3
+          }
+        ]
       },
-
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: {
-          intersect: false,
-          mode: "index"
-        },
-
+        interaction: { intersect: false, mode: "index" },
         plugins: {
-          legend: {
-            labels: {
-              color: "#ddd6ce"
-            }
-          }
+          legend: { labels: { color: "#ddd6ce" } }
         },
-
         scales: {
           x: {
-            ticks: {
-              color: "#a6a09a",
-              maxTicksLimit: 10
-            },
-            grid: {
-              color: "rgba(255,255,255,0.05)"
-            }
+            ticks: { color: "#a6a09a", maxTicksLimit: 10 },
+            grid: { color: "rgba(255,255,255,0.05)" }
           },
-
           y: {
             beginAtZero: true,
-            ticks: {
-              precision: 0,
-              color: "#a6a09a"
-            },
-            grid: {
-              color: "rgba(255,255,255,0.07)"
-            }
+            ticks: { precision: 0, color: "#a6a09a" },
+            grid: { color: "rgba(255,255,255,0.07)" }
           }
         }
       }
@@ -809,7 +646,6 @@
 
   async function loadDailyReviewTotals() {
     const day = localDateKey();
-
     const query = new URLSearchParams({
       select: "id,restaurant,day,opening_count,closing_count,updated_at",
       restaurant: `eq.${RESTAURANT}`,
@@ -817,124 +653,68 @@
       limit: "1"
     });
 
-    const rows = await apiFetch(
-      restUrl(DAILY_TABLE, query.toString())
-    );
+    const rows = await apiFetch(restUrl(DAILY_TABLE, query.toString()));
+    const record = Array.isArray(rows) && rows.length ? rows[0] : null;
+    const opening = record?.opening_count;
+    const closing = record?.closing_count;
 
-    const dailyRow =
-      Array.isArray(rows) && rows.length ? rows[0] : null;
+    setText("openingDisplay",
+      opening == null ? "—" : formatNumber(opening));
+    setText("closingDisplay",
+      closing == null ? "—" : formatNumber(closing));
 
-    const opening = dailyRow?.opening_count;
-    const closing = dailyRow?.closing_count;
-
-    setText(
-      "openingDisplay",
-      opening === null || opening === undefined
-        ? "—"
-        : formatNumber(opening)
-    );
-
-    setText(
-      "closingDisplay",
-      closing === null || closing === undefined
-        ? "—"
-        : formatNumber(closing)
-    );
-
-    document.getElementById("openingInput").value =
-      opening === null || opening === undefined ? "" : opening;
-
-    document.getElementById("closingInput").value =
-      closing === null || closing === undefined ? "" : closing;
+    document.getElementById("openingInput").value = opening ?? "";
+    document.getElementById("closingInput").value = closing ?? "";
 
     updateGainedCard(opening, closing);
 
-    setText(
-      "openingStatus",
-      opening === null || opening === undefined
-        ? "Todavía no guardaste la apertura de hoy."
-        : "Apertura guardada para hoy."
-    );
+    setText("openingStatus", opening == null
+      ? "Todavía no guardaste la apertura de hoy."
+      : "Apertura guardada para hoy.");
 
-    setText(
-      "closingStatus",
-      closing === null || closing === undefined
-        ? "Todavía no guardaste el cierre de hoy."
-        : "Cierre guardado para hoy."
-    );
+    setText("closingStatus", closing == null
+      ? "Todavía no guardaste el cierre de hoy."
+      : "Cierre guardado para hoy.");
   }
 
   function updateGainedCard(opening, closing) {
     const display = document.getElementById("reviewsGainedDisplay");
     const note = document.getElementById("reviewsGainedNote");
 
-    if (
-      opening === null || opening === undefined ||
-      closing === null || closing === undefined
-    ) {
+    display.classList.remove("positive", "negative");
+
+    if (opening == null || closing == null) {
       display.textContent = "—";
-      display.classList.remove("positive", "negative");
-
-      note.textContent =
-        "Guardá la apertura y el cierre para calcular la diferencia.";
-
+      note.textContent = "Guardá la apertura y el cierre para calcular la diferencia.";
       return;
     }
 
     const difference = Number(closing) - Number(opening);
-
     display.textContent = difference > 0
       ? `+${formatNumber(difference)}`
       : formatNumber(difference);
 
-    display.classList.remove("positive", "negative");
+    if (difference > 0) display.classList.add("positive");
+    if (difference < 0) display.classList.add("negative");
 
-    if (difference > 0) {
-      display.classList.add("positive");
-    }
-
-    if (difference < 0) {
-      display.classList.add("negative");
-    }
-
-    if (difference > 0) {
-      note.textContent =
-        "Aumento neto de reseñas respecto a la apertura.";
-    } else if (difference < 0) {
-      note.textContent =
-        "El total de cierre es inferior al de apertura. Revisá ambos valores.";
-    } else {
-      note.textContent =
-        "El total de reseñas no cambió entre apertura y cierre.";
-    }
+    note.textContent = difference > 0
+      ? "Aumento neto de reseñas respecto a la apertura."
+      : difference < 0
+        ? "El total de cierre es inferior al de apertura. Revisá ambos valores."
+        : "El total de reseñas no cambió entre apertura y cierre.";
   }
 
   async function saveDailyValue(field) {
     const isOpening = field === "opening_count";
+    const input = document.getElementById(isOpening ? "openingInput" : "closingInput");
+    const button = document.getElementById(isOpening ? "saveOpeningButton" : "saveClosingButton");
+    const status = document.getElementById(isOpening ? "openingStatus" : "closingStatus");
 
-    const input = document.getElementById(
-      isOpening ? "openingInput" : "closingInput"
-    );
+    const raw = input.value.trim();
+    const value = Number(raw);
 
-    const button = document.getElementById(
-      isOpening ? "saveOpeningButton" : "saveClosingButton"
-    );
-
-    const status = document.getElementById(
-      isOpening ? "openingStatus" : "closingStatus"
-    );
-
-    const rawValue = input.value.trim();
-    const value = Number(rawValue);
-
-    if (
-      rawValue === "" ||
-      !Number.isSafeInteger(value) ||
-      value < 0
-    ) {
-      status.textContent =
-        "Ingresá un número entero igual o mayor que cero.";
-
+    if (raw === "" || !Number.isSafeInteger(value) || value < 0) {
+      status.textContent = "Ingresá un número entero igual o mayor que cero.";
       status.classList.add("negative");
       return;
     }
@@ -945,7 +725,6 @@
 
     try {
       const day = localDateKey();
-
       const query = new URLSearchParams({
         select: "id,restaurant,day,opening_count,closing_count",
         restaurant: `eq.${RESTAURANT}`,
@@ -953,12 +732,8 @@
         limit: "1"
       });
 
-      const rows = await apiFetch(
-        restUrl(DAILY_TABLE, query.toString())
-      );
-
-      const existing =
-        Array.isArray(rows) && rows.length ? rows[0] : null;
+      const rows = await apiFetch(restUrl(DAILY_TABLE, query.toString()));
+      const existing = Array.isArray(rows) && rows.length ? rows[0] : null;
 
       if (existing) {
         const updateQuery = new URLSearchParams({
@@ -967,58 +742,43 @@
           day: `eq.${day}`
         });
 
-        await apiFetch(
-          restUrl(DAILY_TABLE, updateQuery.toString()),
-          {
-            method: "PATCH",
-
-            headers: {
-              "Content-Type": "application/json",
-              "Prefer": "return=minimal"
-            },
-
-            body: JSON.stringify({
-              [field]: value,
-              updated_at: new Date().toISOString()
-            })
-          }
-        );
+        await apiFetch(restUrl(DAILY_TABLE, updateQuery.toString()), {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify({
+            [field]: value,
+            updated_at: new Date().toISOString()
+          })
+        });
       } else {
-        await apiFetch(
-          restUrl(DAILY_TABLE),
-          {
-            method: "POST",
-
-            headers: {
-              "Content-Type": "application/json",
-              "Prefer": "return=minimal"
-            },
-
-            body: JSON.stringify({
-              restaurant: RESTAURANT,
-              day,
-              opening_count: isOpening ? value : null,
-              closing_count: isOpening ? null : value,
-              updated_at: new Date().toISOString()
-            })
-          }
-        );
+        await apiFetch(restUrl(DAILY_TABLE), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify({
+            restaurant: RESTAURANT,
+            day,
+            opening_count: isOpening ? value : null,
+            closing_count: isOpening ? null : value,
+            updated_at: new Date().toISOString()
+          })
+        });
       }
 
       await loadDailyReviewTotals();
-
       status.textContent = isOpening
         ? "Apertura guardada correctamente."
         : "Cierre guardado correctamente.";
-
       status.classList.add("positive");
-
     } catch (error) {
       console.error("Error guardando el total diario:", error);
-
       status.textContent = "No se pudo guardar: " + error.message;
       status.classList.add("negative");
-
     } finally {
       button.disabled = false;
     }
@@ -1028,15 +788,13 @@
     if (refreshInProgress) return;
 
     refreshInProgress = true;
-
-    const refreshButton = document.getElementById("refreshButton");
-
-    refreshButton.disabled = true;
+    const button = document.getElementById("refreshButton");
+    button.disabled = true;
     setText("generalStatus", "Actualizando datos…");
 
     try {
       const results = await Promise.allSettled([
-        loadTapData(),
+        loadEventData(),
         loadDailyReviewTotals()
       ]);
 
@@ -1044,52 +802,38 @@
         .filter(result => result.status === "rejected")
         .map(result => result.reason?.message || "Error desconocido");
 
-      setText(
-        "generalStatus",
-        errors.length
-          ? "No se pudieron cargar todos los datos: " + errors.join(" | ")
-          : "Datos actualizados correctamente."
-      );
-
+      setText("generalStatus", errors.length
+        ? "No se pudieron cargar todos los datos: " + errors.join(" | ")
+        : "Datos actualizados correctamente.");
     } catch (error) {
       setText("generalStatus", "Error al actualizar: " + error.message);
-
     } finally {
-      setText(
-        "lastUpdated",
-        "Última actualización: " +
+      setText("lastUpdated", "Última actualización: " +
         new Intl.DateTimeFormat("es-ES", {
           timeZone: "Europe/Madrid",
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit"
-        }).format(new Date())
-      );
+        }).format(new Date()));
 
-      refreshButton.disabled = false;
+      button.disabled = false;
       refreshInProgress = false;
     }
   }
 
   document.getElementById("saveOpeningButton")
-    .addEventListener("click", () => {
-      saveDailyValue("opening_count");
-    });
+    .addEventListener("click", () => saveDailyValue("opening_count"));
 
   document.getElementById("saveClosingButton")
-    .addEventListener("click", () => {
-      saveDailyValue("closing_count");
-    });
+    .addEventListener("click", () => saveDailyValue("closing_count"));
 
   document.getElementById("refreshButton")
     .addEventListener("click", refreshDashboard);
 
   updateDateLabels();
   refreshDashboard();
-
   setInterval(refreshDashboard, 30000);
   setInterval(updateDateLabels, 60000);
 </script>
 </body>
 </html>
-```

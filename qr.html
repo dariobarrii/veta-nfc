@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VETA | Reseña de Google</title>
+  <meta name="theme-color" content="#111111">
+</head>
+<body style="background:#111;color:#d9b783;font-family:Arial,sans-serif;text-align:center;padding:40px 20px">
+  <h2>VETA Steak House</h2>
+  <p id="status">Abriendo las reseñas de Google…</p>
+
+  <script>
+    const SUPABASE_URL =
+      "https://qcvhxrudzjlgqlhvnkkl.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
+
+    const RESTAURANT = "Veta Steak House";
+
+    const GOOGLE_REVIEW_URL =
+      "https://search.google.com/local/writereview?placeid=ChIJNTPCGACjpBIR6ngbLVUZjeI";
+
+    async function registrarEscaneoQR() {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 1800);
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/nfc_events`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`,
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify({
+            restaurant: RESTAURANT,
+            event: "qr_scan"
+          }),
+          signal: controller.signal
+        });
+      } catch (error) {
+        console.error("No se pudo registrar el escaneo QR:", error);
+      } finally {
+        clearTimeout(timeout);
+        window.location.replace(GOOGLE_REVIEW_URL);
+      }
+    }
+
+    registrarEscaneoQR();
+  </script>
+</body>
+</html>

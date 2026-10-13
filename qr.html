@@ -18,6 +18,8 @@
     const SUPABASE_KEY =
       "sb_publishable_OpfoWwYD2lvC9dVTT_UT8A_Bvz_GKRw";
 
+    function detectDeviceType(){const ua=navigator.userAgent||'';if(/iPad|iPhone|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1))return 'iPhone/iPad';if(/Android/i.test(ua))return 'Android';if(/Windows NT|Macintosh|Mac OS X|Linux x86_64|CrOS/i.test(ua))return 'PC/Mac';return 'Desconocido';}
+
     const RESTAURANT = "Veta Steak House";
 
     const GOOGLE_REVIEW_URL =
@@ -38,7 +40,8 @@
           },
           body: JSON.stringify({
             restaurant: RESTAURANT,
-            event: "qr_scan"
+            event: "qr_scan",
+            device_type: detectDeviceType()
           }),
           signal: controller.signal
         });
